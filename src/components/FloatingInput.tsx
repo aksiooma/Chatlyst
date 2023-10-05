@@ -8,9 +8,9 @@ const StyledTextarea = styled(TextareaAutosize).attrs(() => ({
   placeholder: "...",
 }))`
   position: absolute;
-  bottom: 40px;
+  bottom: 30px;
   left: 50%;
-  width: calc(80% - 10px);
+  width: calc(75% - 10px);
   max-width: 849px;
   transform: translateX(-50%);
   color: rgba(255, 255, 255, 0.992);
@@ -35,6 +35,9 @@ const StyledTextarea = styled(TextareaAutosize).attrs(() => ({
     background-color: rgba(33, 33, 33, 1);
   }
 
+  @media (max-width: 768px) {
+    width: calc(70% - 10px);
+  }
 `;
 
 interface FloatingInputProps {

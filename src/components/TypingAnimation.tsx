@@ -10,7 +10,7 @@ const dotAnimation = keyframes`
 const Dot = styled.div`
   width: 8px;
   height: 8px;
-  background-color: #000;
+  background-color: white;
   border-radius: 50%;
   margin: 0 2px;
   animation: ${dotAnimation} 1.5s ease-in-out infinite;
@@ -27,7 +27,6 @@ const TypingAnimationContainer = styled.div`
   justify-content: center;
   align-items: center;
   margin: 10px;
-  background-color: #fff9c4;
   color: black;
   padding: 20px;
   margin: 10px;
