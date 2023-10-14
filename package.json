@@ -5,15 +5,20 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "concurrently \"tsc && vite build\" \"npm run build:server\"",
+    "build:server": "cd server && npm run build",
     "start": "concurrently \"npm run dev\" \"npm --prefix ./Server run dev:server\"",
+    "start:prod:server": "node server.js",
+    "start:prod": "concurrently \"npm run start:prod:server\" \"serve -s dist\"",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
   "dependencies": {
     "@types/axios": "^0.14.0",
+    "@types/express-session": "^1.17.8",
     "@types/styled-components": "^5.1.28",
     "axios": "^1.5.1",
+    "express-session": "^1.17.3",
     "framer-motion": "^10.16.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

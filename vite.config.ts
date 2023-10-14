@@ -1,13 +1,18 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { qrcode } from 'vite-plugin-qrcode';
+
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), qrcode()],
+  plugins: [react()],
   server: {
+    port: 3000,
     proxy: {
-      '/api': 'http://localhost:5173'
+      '/api': {
+        target: 'http://localhost:5173',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      }
     }
   }
 })

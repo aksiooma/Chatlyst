@@ -84,4 +84,4 @@ const FloatingInput: React.FC<FloatingInputProps> = ({ onNewMessage, isResponseR
   );
 };
 
-export default FloatingInput;
+export default React.memo(FloatingInput);
