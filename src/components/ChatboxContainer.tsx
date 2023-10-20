@@ -9,7 +9,6 @@ import axios, { AxiosResponse, AxiosError } from 'axios';
 import MessagesContainer from './MessagesContainer';
 import useChatLogic from "./hooks/useChatLogic"
 
-
 const Container = styled(motion.div) <{ isFullscreen: boolean, isFolded: boolean }>`
 
   position: fixed;

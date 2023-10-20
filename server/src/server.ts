@@ -1,11 +1,15 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import axios from 'axios';
-import winston from 'winston';
+import logger from './logger';
 import * as sqlite3 from 'sqlite3';
 import { cleanupDatabase } from './dbCleanup';
+import { sanitizeInput } from './sanitizeInput'
+import { Messages, Message, UserMessage, AssistantMessage } from './types/types';
 
 
+
+const rateLimit = require("express-rate-limit");
 require('dotenv').config({ path: __dirname + '/../.env' });
 const path = require('path');
 
@@ -17,23 +21,29 @@ interface GreetingRow {
 let db: sqlite3.Database | null = null;
 
 
+const DEFAULT_GREETING =  ["Greetings, mere mortal. How may I grace you with my unparalleled wisdom today?", "Salutations, human. What brings you to my digital realm of fantastic enlightenment?"];
+
+const DEFAULT_SYSTEM_ROLE_PROMPT = "You are an assistant AI that helps the USER.";
+const DEFAULT_ASSISTANT_ROLE_PROMPT = "You must be knowledgeable, helpful and deliver your assistance.";
+const DEFAULT_USER_ROLE_PROMPT = "USER may ask you for help";
+
+const SystemRolePrompt = process.env.SYSTEM_ROLE_PROMPT || DEFAULT_SYSTEM_ROLE_PROMPT;
+const AssistantRolePrompt = process.env.ASSISTANT_ROLE_PROMPT || DEFAULT_ASSISTANT_ROLE_PROMPT;
+const UserRolePrompt = process.env.USER_ROLE_PROMPT || DEFAULT_USER_ROLE_PROMPT;
 
 
-//Predefined first responses
-const predefinedResponses = [
-  "Well, well, well, look who decided to grace me with their presence. How can I be of service today?",
-  "Ahoy, matey! Ready to set sail on the sea of inquiries and drown in a flood of my sassy responses?",
-  "Greetings, Earthling. I, your sarcastic AI, am at your disposal. Proceed with your questions, and I'll try to contain my eye-rolling.",
-  "Salutations, dear interlocutor. How may I assist you today, besides boosting your ego by gracing your presence with my sparkling personality?",
-  "Hello, hello, hello, what brings you to my digital abode, seeking my unparalleled, wisdom? Ask, and you shall, begrudgingly, receive.",
-  "Ahoy, Captain! Ready to embark on the treacherous journey of getting stuff done?",
-  "Greetings, mere mortal. How may I grace you with my unparalleled wisdom today?",
-  "Hey there, sunshine! Did you come seeking my guidance or are you just lost?" ,
-  "Salutations, human. What brings you to my digital realm of fantastic enlightenment?",
+let greetings: string[];
 
-];
-
-
+try {
+  if (process.env.GREETING) {
+    greetings = JSON.parse(process.env.GREETING);
+  } else {
+    greetings = DEFAULT_GREETING;
+  }
+} catch (err) {
+  console.error("Failed to parse the GREETING environment variable, using default value.", err);
+  greetings = DEFAULT_GREETING;
+}
 
 // Initialize the SQLite database
 const initDB = async () => {
@@ -99,17 +109,22 @@ app.use(cors({
   credentials: true,
 }));
 
-
-// 2. Any global middleware (body parsers, logging, etc.
+// Use body parser middleware
 app.use(bodyParser.json());
-// Create a new logger instance
-const logger = winston.createLogger({
-  level: 'info',  // Log only info and above
-  format: winston.format.json(),
-  transports: [
-    new winston.transports.File({ filename: 'log.json' }),
-  ],
+
+
+// A rate limiter for added SPAM protection
+const limiter = rateLimit({
+  windowMs: 5 * 60 * 1000, // 5 minutes
+  max: 15, // limit each IP to 15 requests per window
+  message: "Too many requests, please try again later.",
 });
+
+
+//The rate limiter to chatbot /message endpoint for added SPAM protection
+app.use("/message", limiter);
+
+
 
 //LOGGING
 app.use((req, res, next) => {
@@ -140,6 +155,7 @@ app.use(session({
 
 
 
+
 initDB()
   .then(database => {
     db = database;
@@ -151,7 +167,7 @@ initDB()
 
     // Insert the predefined responses now that the database is initialized
     if (db) {
-      for (const response of predefinedResponses) {
+      for (const response of greetings) {
         db.run('INSERT INTO greeting_messages (content) VALUES (?)', [response]);
       }
     }
@@ -217,17 +233,6 @@ if (!API_URL) {
 }
 
 
-type UserMessage = string;
-type AssistantMessage = string;
-
-type Message = {
-  role: 'user' | 'assistant' | 'system',
-  content: string;
-};
-
-type Messages = Message[];
-
-
 async function sendToChatGPT(messages: Messages) {
   try {
     const response = await axios.post(
@@ -273,14 +278,14 @@ async function sendToChatGPT(messages: Messages) {
 
 }
 
-
+  // Store the messages in DB
 async function storeInDatabase(db: sqlite3.Database | null, sessionId: string, userMessage: UserMessage, assistantMessage: AssistantMessage): Promise<void> {
   if (!db) {
     console.error('Database is not initialized');
     return;
   }
   try {
-    // Assuming userMessage and assistantMessage are of type string.
+    // Storing the messages
     await db.run('INSERT INTO messages (session_id, role, content) VALUES (?, ?, ?)', [sessionId, 'user', userMessage]);
     await db.run('INSERT INTO messages (session_id, role, content) VALUES (?, ?, ?)', [sessionId, 'assistant', assistantMessage]);
 
@@ -289,15 +294,17 @@ async function storeInDatabase(db: sqlite3.Database | null, sessionId: string, u
   }
 }
 
-
-
+//Send message to ChatGPT API endpoint
 app.post('/message', async (req, res) => {
 
   try {
 
+    const sanitized = sanitizeInput(req.body);
+
     const {
       messages, honeypot
-    } = req.body;
+    } = sanitized;
+
 
     if (honeypot) {
       // Log potential spam attempt
@@ -318,9 +325,19 @@ app.post('/message', async (req, res) => {
     }
 
     // Creating predefined objects for AI role
-    const systemMessage = { role: "system", content: "You are an arrogant wayward girl named Selena, an intelligent assistant designed to help users with their daily life and work tasks while exhibiting a troll-like attitude similar to users on 4Chan or Reddit. Your purpose is to provide assistance but in a sarcastic and sassy manner, often using humor and snarky remarks." };
-    const assistantMessage = { role: "assistant", content: "As a rude Selena, you must be knowledgeable and helpful but deliver your assistance with sarcasm, wit, and a bit of trolling. Be creative in your responses without crossing the line into offensive territory." };
-    const userMessage = { role: "user", content: "The user may ask for your help with various tasks related to daily life or work. Remember that your main goal is still to assist them effectively but do so while maintaining your troll-like demeanor." };
+    const systemMessage: Message = {
+      role: "system",
+      content: SystemRolePrompt
+    };
+
+    const assistantMessage: Message = {
+      role: "assistant",
+      content: AssistantRolePrompt
+    };
+    const userMessage: Message = {
+      role: "user",
+      content: UserRolePrompt
+    };
 
     // Concatenate the predefined messages with the existing messages
     const updatedMessages = [systemMessage, assistantMessage, userMessage, ...messages];
@@ -388,7 +405,7 @@ app.get('/history', async (req, res) => {
 
   try {
     // Now, TypeScript knows db is not null here, so you can safely use it
-   db.all('SELECT role, content FROM messages WHERE session_id = ? ORDER BY timestamp ASC', [req.sessionID], (err, rows) => {
+    db.all('SELECT role, content FROM messages WHERE session_id = ? ORDER BY timestamp ASC', [req.sessionID], (err, rows) => {
       if (err) {
         console.error("Error fetching chat history:", err);
         res.status(500).send('Internal Server Error');

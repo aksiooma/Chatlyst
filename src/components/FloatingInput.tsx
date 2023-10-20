@@ -61,8 +61,6 @@ const FloatingInput: React.FC<FloatingInputProps> = ({ onNewMessage, isResponseR
   }, [isLoading]);
 
 
-
-
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey && isResponseReceived) {  // Check isResponseReceived here
       e.preventDefault();  // Prevents the default action of a new line being created on "Enter" key press
