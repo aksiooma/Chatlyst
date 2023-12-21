@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import ChatHeader from './ChatHeader';
 import ChatFooter from './ChatFooter'
-import { HaloState } from './ChatHeader';
+import { HaloState } from './types/types';
 import axios, { AxiosResponse, AxiosError } from 'axios';
 import MessagesContainer from './MessagesContainer';
 import useChatLogic from "./hooks/useChatLogic"
@@ -72,7 +72,7 @@ const animationVariants = {
     right: 0,
     bottom: 0,
     width: '200px',
-    height: '100px',  // Specify the height of your header here
+    height: '100px',
     transition: { duration: 0.5, ease: "anticipate" }
   },
 };
@@ -150,7 +150,6 @@ const ChatboxContainer: React.FC<ChatboxContainerProps> = ({ isFullscreen: propI
 
 
     if (messageText.trim() !== '' && isResponseReceived) {
-
 
       // Add user message
       setMessages(prevMessages => [...prevMessages, { role: 'user', content: breakLongSequences(messageText) }]);

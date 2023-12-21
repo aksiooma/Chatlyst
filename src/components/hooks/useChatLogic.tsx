@@ -1,14 +1,8 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { UseChatLogicProps } from '../types/types';
 type Message = { role: 'user' | 'assistant', content: string };
 
-interface UseChatLogicProps {
-  propIsFullscreen: boolean;
-  propIsFolded: boolean;
-}
-
-
-//Setting all the states for the ChatContainer
 const useChatLogic = ({ propIsFullscreen, propIsFolded }: UseChatLogicProps) => {
   const [messages, setMessages] = useState<Array<Message>>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -21,7 +15,6 @@ const useChatLogic = ({ propIsFullscreen, propIsFolded }: UseChatLogicProps) => 
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5173";
   const [honeypotValue, setHoneypotValue] = useState<string>('');
 
-  // other logic, such as handlers or useEffects
   const scrollToBottom = () => {
     setTimeout(() => {
       const chat = document.getElementById("MessagesCont");
@@ -31,7 +24,7 @@ const useChatLogic = ({ propIsFullscreen, propIsFolded }: UseChatLogicProps) => 
 
   };
 
-  //Fetch History and greeting
+  //Fetch chat history and greeting
   useEffect(() => {
 
     const fetchData = async () => {
@@ -119,7 +112,7 @@ const useChatLogic = ({ propIsFullscreen, propIsFolded }: UseChatLogicProps) => 
     delayFooter,
     API_URL,
     honeypotValue,
-    // other setters or methods
+    
     scrollToBottom,
     setMessages,
     setIsLoading,

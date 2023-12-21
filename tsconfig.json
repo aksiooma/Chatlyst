@@ -22,6 +22,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "server/src/db.ts",  "server/typings/express-session.d.ts"],
+  "include": ["src", "server/src/db.ts",  "server/typings/express-session.d.ts", "src/components/types/types.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

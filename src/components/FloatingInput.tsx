@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import TextareaAutosize from 'react-textarea-autosize';
+import { FloatingInputProps } from './types/types';
 
 const StyledTextarea = styled(TextareaAutosize).attrs(() => ({
   role: "textbox",
@@ -40,12 +41,6 @@ const StyledTextarea = styled(TextareaAutosize).attrs(() => ({
   }
 `;
 
-interface FloatingInputProps {
-  onNewMessage: (message: string) => void;
-  isResponseReceived: boolean;
-  isLoading: boolean;
-}
-
 
 const FloatingInput: React.FC<FloatingInputProps> = ({ onNewMessage, isResponseReceived, isLoading}) => {
 
@@ -62,7 +57,7 @@ const FloatingInput: React.FC<FloatingInputProps> = ({ onNewMessage, isResponseR
 
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey && isResponseReceived) {  // Check isResponseReceived here
+    if (e.key === 'Enter' && !e.shiftKey && isResponseReceived) { 
       e.preventDefault();  // Prevents the default action of a new line being created on "Enter" key press
       onNewMessage(text);
       setText('');  // Resets the text area
@@ -74,7 +69,7 @@ const FloatingInput: React.FC<FloatingInputProps> = ({ onNewMessage, isResponseR
     ref={inputRef}
     value={text}
     onChange={(e) => setText(e.target.value)}
-    onKeyDown={handleKeyDown}  // Add this line to handle "Enter" key presses
+    onKeyDown={handleKeyDown}  // handle "Enter" key presses
     minRows={1}
     maxRows={8}
     disabled={!isResponseReceived}

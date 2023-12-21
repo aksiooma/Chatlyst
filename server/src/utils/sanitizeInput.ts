@@ -1,5 +1,5 @@
 import sanitizeString from './sanitizeString';
-import { SanitizedInput, Message, Role } from './types/types';
+import { SanitizedInput, Message, Role } from '../types/types';
 
 
 

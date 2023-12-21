@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
+import { UseResponsiveImagesProps } from "../types/types";
 
-interface UseResponsiveImagesProps {
-    avatarSmall: string;
-    avatarMedium: string;
-    avatarLarge: string;
-}
 
 const useResponsiveAvatar = ({ avatarSmall, avatarMedium, avatarLarge }: UseResponsiveImagesProps) => {
   const [currentAvatar, setCurrentAvatar] = useState<string>(avatarLarge);
@@ -23,7 +19,6 @@ const useResponsiveAvatar = ({ avatarSmall, avatarMedium, avatarLarge }: UseResp
     // Initial call
     updateImage();
 
-    // Add event listener
     window.addEventListener('resize', updateImage);
 
     // Cleanup

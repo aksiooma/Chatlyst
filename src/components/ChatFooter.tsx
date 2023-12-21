@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import FloatingInput from './FloatingInput'; // Update the path accordingly
-
+import FloatingInput from './FloatingInput';
+import { ChatFooterProps } from './types/types';
 
 const ChatFooter = styled(motion.div) <{ isFolded: boolean }>`
   display: ${props => props.isFolded ? 'none' : 'block'};
@@ -15,17 +15,6 @@ const ChatFooter = styled(motion.div) <{ isFolded: boolean }>`
     border-radius: 0px;
   }
 `;
-
-
-
-interface ChatFooterProps {
-  handleChatMessages: (message: string) => void;
-  isResponseReceived: boolean;
-  isLoading: boolean;
-  honeypotValue: string;
-  setHoneypotValue: (value: string) => void;
-  delayRenderFloatingInput: boolean;
-}
 
 const Footer: React.FC<ChatFooterProps> = ({
   handleChatMessages,

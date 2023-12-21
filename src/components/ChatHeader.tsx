@@ -1,10 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { motion } from 'framer-motion'; // assuming you're using framer-motion
+import { motion } from 'framer-motion';
 import useResponsiveAvatar from '../components/hooks/useResponsiveImages'
 import avatarLarge from '../assets/ai_avatar_v2_large.webp';
 import avatarMedium from '../assets/ai_avatar_v2_medium.webp';
 import avatarSmall from '../assets/ai_avatar_v2_small.webp';
+import { ChatboxHeaderProps } from './types/types';
 
 
 const StyledHeader = styled(motion.div) <{ isFullscreen: boolean, isFolded: boolean }>`
@@ -76,7 +77,7 @@ const FoldButton = styled(IconButton)`  // inherits styles from IconButton
 
 const haloVariants = {
   active: {
-    boxShadow: '0 0 10px 4px rgba(255, 177, 58, 1)',  // adjust as needed for desired glow effect
+    boxShadow: '0 0 10px 4px rgba(255, 177, 58, 1)', 
   },
   error: {
     boxShadow: '0 0 10px 4px rgba(160, 20, 40, 1)',
@@ -100,21 +101,7 @@ const HaloContainer = styled(motion.div)`
 `;
 
 const Avatar = styled.img`
-
 `
-export type HaloState = 'active' | 'error';
-
-
-interface ChatboxHeaderProps {
-  isFullscreen: boolean;
-  isFolded: boolean;
-  haloState: HaloState;
-  showFullscreenIcon: boolean;
-  toggleView: () => void;
-  toggleFold: () => void;
-  renderIcon: () => JSX.Element;
-}
-
 
 const ChatboxHeader: React.FC<ChatboxHeaderProps> = ({
   isFullscreen,

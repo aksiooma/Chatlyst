@@ -3,6 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import TypingAnimation from './TypingAnimation';  // I'm assuming this comes from another component
+import { MessagesListProps } from './types/types';
 
 
 const messageAnimation = {
@@ -41,7 +42,6 @@ const messageAnimation = {
     background-color: rgba(228, 211, 228, 1);
     color: rgba(45, 30, 45, 1);
    
-    
   `;
   
   const ResponseMessage = styled(ChatBubble)`
@@ -52,11 +52,6 @@ const messageAnimation = {
     color: rgba(240, 235, 245, 1);
     
   `;
-
-interface MessagesListProps {
-  messages: Array<{ role: 'user' | 'assistant', content: string }>;
-  isLoading: boolean;
-}
 
 const MessagesList: React.FC<MessagesListProps> = ({ messages, isLoading }) => {
   return (
