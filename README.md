@@ -5,6 +5,7 @@
 WittyAI is a chatbot application designed to bring humor and cleverness to everyday interactions. Inspired by the playful banter of online communities like Reddit, this chatbot stands out with its sassy and sarcastic demeanor. It's built to assist users in their daily tasks and queries while maintaining a unique, engaging personality. This version of WittyAI is the "skeleton" version, which lays the foundation without predefined roles.
 
 ## Features
+- Minimalistic UI
 - Intelligent Conversations: Engages users with smart, witty responses.
 - Task Assistance: Helps with daily tasks and information retrieval.
 - Customizable AI Role. 
@@ -77,7 +78,7 @@ WittyAI allows you to customize the role prompts through environment variables. 
 - `ASSISTANT_ROLE_PROMPT`: Sets the assistant's role prompt. Default is "Default assistant role prompt".
 - `USER_ROLE_PROMPT`: Sets the user's role prompt. Default is "Default user role prompt".
 
-To set these variables, add them to your `.env` file in the root of the project like this:
+To set these variables, add them to your `.env` file in the server root of the project like this:
 
 ```env
 SYSTEM_ROLE_PROMPT=Your custom system role prompt

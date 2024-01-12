@@ -137,4 +137,3 @@ const ChatboxHeader: React.FC<ChatboxHeaderProps> = ({
 );
     }
 export default React.memo(ChatboxHeader);
-

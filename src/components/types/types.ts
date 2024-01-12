@@ -6,10 +6,16 @@ export interface ChatFooterProps {
     honeypotValue: string;
     setHoneypotValue: (value: string) => void;
     delayRenderFloatingInput: boolean;
+    isFolded: boolean;
   }
 
 
 export type HaloState = 'active' | 'error';
+
+export interface ChatboxContainerProps {
+  isFullscreen: boolean;
+  isFolded: boolean;
+}
 
 
 export interface ChatboxHeaderProps {

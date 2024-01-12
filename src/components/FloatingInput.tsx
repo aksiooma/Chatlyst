@@ -3,20 +3,27 @@ import styled from 'styled-components';
 import TextareaAutosize from 'react-textarea-autosize';
 import { FloatingInputProps } from './types/types';
 
+const InputContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  position: relative;
+  left: 50%;
+  width: calc(110% - 20px);
+  max-width: 849px;
+  transform: translateX(-50%);
+  max-height: 120px;
+`;
+
 const StyledTextarea = styled(TextareaAutosize).attrs(() => ({
   role: "textbox",
   'aria-multiline': "true",
   placeholder: "...",
 }))`
-  position: absolute;
-  bottom: 30px;
-  left: 50%;
-  width: calc(75% - 10px);
-  max-width: 849px;
-  transform: translateX(-50%);
+  flex-grow: 1;
   color: rgba(255, 255, 255, 0.992);
   border: 1px solid rgba(125, 0, 174, 0.1);
-  padding: 20px 60px 20px 20px;
+  padding: 20px 45px 20px 20px;
   font-size: 17px;
   text-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.3);
   line-height: 1.5;
@@ -36,18 +43,39 @@ const StyledTextarea = styled(TextareaAutosize).attrs(() => ({
     background-color: rgba(33, 33, 33, 1);
   }
 
-  @media (max-width: 768px) {
-    width: calc(70% - 10px);
+`;
+
+const SendButton = styled.button`
+  position: absolute;
+  right: 15px; // Distance from the right edge of the InputContainer
+  top: 50%; // Start at the vertical center of the InputContainer
+  transform: translateY(-50%); // Shift upwards by half of its own height
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+
+  svg {
+    width: 24px; // Adjust if needed
+    height: 24px; // Adjust if needed
+    fill: rgba(67, 101, 107, 0.597); // Normal state color
+
+    &:hover {
+      fill: rgb(255, 255, 255); // Hover state color
+      stroke: #FFF; // Add a stroke or change as needed
+      stroke-width: 1px; // Adjust stroke width as needed
+    }
   }
+
 `;
 
 
-const FloatingInput: React.FC<FloatingInputProps> = ({ onNewMessage, isResponseReceived, isLoading}) => {
+const FloatingInput: React.FC<FloatingInputProps> = ({ onNewMessage, isResponseReceived, isLoading }) => {
 
   const [text, setText] = useState('');
-  const inputRef = useRef<HTMLTextAreaElement>(null);  // Specify the ref type here
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  
+
   useEffect(() => {
     console.log('isLoading: ', isLoading);
     if (!isLoading && inputRef.current !== null) {
@@ -57,23 +85,46 @@ const FloatingInput: React.FC<FloatingInputProps> = ({ onNewMessage, isResponseR
 
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey && isResponseReceived) { 
-      e.preventDefault();  // Prevents the default action of a new line being created on "Enter" key press
-      onNewMessage(text);
-      setText('');  // Resets the text area
+    const isMobile = window.innerWidth <= 768;
+
+    if (e.key === 'Enter' && !e.shiftKey && isResponseReceived) {
+      e.preventDefault();
+
+      if (!isMobile || (isMobile && text.trim() === '')) {
+        onNewMessage(text);
+        setText('');
+      } else if (isMobile) {
+        setText(prev => prev + '\n');
+      }
     }
   };
 
+  const handleSendClick = () => {
+    onNewMessage(text);
+    setText('');
+  };
+
   return (
-    <StyledTextarea
-    ref={inputRef}
-    value={text}
-    onChange={(e) => setText(e.target.value)}
-    onKeyDown={handleKeyDown}  // handle "Enter" key presses
-    minRows={1}
-    maxRows={8}
-    disabled={!isResponseReceived}
-    />
+    <>
+      <InputContainer>
+        <StyledTextarea
+          ref={inputRef}
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          onKeyDown={handleKeyDown} // handle "Enter" key presses
+          minRows={1}
+          maxRows={8}
+          disabled={!isResponseReceived}
+        />
+        {!isLoading &&
+        <SendButton onClick={handleSendClick}><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" id="send" 
+          viewBox="0 0 512 512">
+          <path
+            d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L284 427.7l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 493.2 160 480V396.4c0-4 1.5-7.8 4.2-10.7L331.8 202.8c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7L106 360.8 17.7 316.6C7.1 311.3 .3 300.7 0 288.9s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z" />
+          <path fill="currentColor" d="..." />
+        </svg></SendButton>}
+      </InputContainer>
+    </>
   );
 };
 

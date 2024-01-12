@@ -4,13 +4,12 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import ChatHeader from './ChatHeader';
 import ChatFooter from './ChatFooter'
-import { HaloState } from './types/types';
+import { ChatboxContainerProps, HaloState } from './types/types';
 import axios, { AxiosResponse, AxiosError } from 'axios';
 import MessagesContainer from './MessagesContainer';
 import useChatLogic from "./hooks/useChatLogic"
 
 const Container = styled(motion.div) <{ isFullscreen: boolean, isFolded: boolean }>`
-
   position: fixed;
   right: 0;
   bottom: 0;
@@ -22,6 +21,7 @@ const Container = styled(motion.div) <{ isFullscreen: boolean, isFolded: boolean
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin-bottom: 15px;
 `;
 
 
@@ -50,6 +50,7 @@ const MinimizeIcon = () => (
 );
 
 
+
 const animationVariants = {
   open: {
     top: 0,
@@ -76,15 +77,6 @@ const animationVariants = {
     transition: { duration: 0.5, ease: "anticipate" }
   },
 };
-
-
-
-interface ChatboxContainerProps {
-  isFullscreen: boolean;
-  isFolded: boolean;
-
-}
-
 
 
 const ChatboxContainer: React.FC<ChatboxContainerProps> = ({ isFullscreen: propIsFullscreen, isFolded: propIsFolded }) => {
@@ -130,7 +122,6 @@ const ChatboxContainer: React.FC<ChatboxContainerProps> = ({ isFullscreen: propI
     }
   };
   
- 
 
   const handleChatMessages = async (messageText: string) => {
 
@@ -216,11 +207,22 @@ const ChatboxContainer: React.FC<ChatboxContainerProps> = ({ isFullscreen: propI
 
 
   const renderIcon = () => {
+    // Using matchMedia to check if the screen width is less than or equal to 768px
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+  
+    // If it's mobile, we return an empty fragment to render nothing
+    if (isMobile) {
+      return <></>;
+    }
+  
+    // Otherwise, return the appropriate icon based on the fullscreen state
     if (isFullscreen) {
       return <MinimizeIcon />;
     }
     return <FullscreenIcon />;
   };
+  
+  
 
 
   return (
@@ -246,6 +248,7 @@ const ChatboxContainer: React.FC<ChatboxContainerProps> = ({ isFullscreen: propI
           honeypotValue={honeypotValue}
           setHoneypotValue={setHoneypotValue}
           delayRenderFloatingInput={delayRenderFloatingInput}
+          isFolded={isFolded}
         />}
     </Container>
   );
