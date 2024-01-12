@@ -2,7 +2,7 @@
 import { Application } from 'express';
 import logger from '../logger';
 
-//4. Logging
+//Logging
 const configureLogger = (app: Application) => {
     app.use((req, res, next) => {
         const logData = {

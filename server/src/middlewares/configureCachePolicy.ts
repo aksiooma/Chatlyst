@@ -1,5 +1,5 @@
 
-//configureCors.ts
+//configureCachePolicy.ts
 import express, { Application } from 'express';
 const path = require('path');
 

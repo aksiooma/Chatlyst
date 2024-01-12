@@ -41,10 +41,10 @@ configureRateLimiter(app);
 configureLogger(app);
 // 5. Session middleware
 configureSession(app);
+// 6. Cache policy
 configureCachePolicy(app);
 
-// Initialize the SQLite database
-// Initialize the database and then start the server
+// Initialize the SQLite database and then start the server
 Database.initDB()
   .then(() => {
     const db = Database.getInstance();
@@ -59,9 +59,8 @@ Database.initDB()
     app.get('/history', getChatHistory);
     app.get('/greeting', getGreeting);
 
-    const PORT = 5173;
+    const PORT = process.env.PORT || 5173;
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
 
     // Setting an interval for database cleanup
     setInterval(() => {

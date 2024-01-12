@@ -222,9 +222,6 @@ const ChatboxContainer: React.FC<ChatboxContainerProps> = ({ isFullscreen: propI
     return <FullscreenIcon />;
   };
   
-  
-
-
   return (
     <Container isFullscreen={isFullscreen} isFolded={isFolded} className={`header ${isFullscreen ? 'fullscreen' : ''}`}
       initial="folded"

@@ -1,8 +1,9 @@
 import { Application } from 'express';
 import cors from 'cors';
 
-const allowedOrigins = ['http://localhost:3000', 'http://192.168.1.106:3000']
+const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [];
 
+//Cors
 const configureCors = (app: Application) => {
   app.use(cors({
     origin: (origin, callback) => {

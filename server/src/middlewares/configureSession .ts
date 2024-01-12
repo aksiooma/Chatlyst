@@ -2,7 +2,7 @@
 import { Application } from 'express';
 const session = require('express-session');
 
-// 5. Session middleware
+//Session middleware
 const configureSession = (app: Application) => {
     app.use(session({
         secret: process.env.SESSION_SECRET,

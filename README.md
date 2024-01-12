@@ -70,10 +70,35 @@ Run the Application
 npm run start
 ```
 
+## Backend Environment Variables
+
+To run the backend of the WittyAI project, you need to set the following environment variables in your `.env` file located in the backend directory:
+
+- `API_KEY`: The API key for accessing the OpenAI GPT services.
+- `API_URL`: The URL endpoint for the OpenAI API.
+- `NODE_ENV`: The environment where the application is running. Typically set to `development` for development and `production` for production environments.
+- `SESSION_SECRET`: A secret key used for securing sessions. Use a random, long string.
+- `PORT`: The port of the server.
+- `ALLOWED_ORIGINS`: The allowed CORS domains split by comma.
+
+**Example `.env` File:**
+
+```env
+API_KEY=your_openai_api_key
+API_URL=https://api.openai.com/v1/chat/completions
+NODE_ENV=development
+SESSION_SECRET=your_random_secret
+PORT=your_server_port
+ALLOWED_ORIGINS=http://localhost:3000,https://example.com
+...
+```
+
+**Security Note**: Ensure that your .env file is added to .gitignore and never pushed to public repositories, especially when it contains sensitive information like API keys or secrets.
+
 ## Configuration
 
 WittyAI allows you to customize the role prompts through environment variables. This feature provides the flexibility to change the behavior of the chatbot without altering the codebase. Below are the environment variables you can set to customize the role prompts:
-
+- `GREETING`: A custom greeting message for the chatbot. This is a JSON-formatted string.
 - `SYSTEM_ROLE_PROMPT`: Sets the system's role prompt. Default is "Default system role prompt".
 - `ASSISTANT_ROLE_PROMPT`: Sets the assistant's role prompt. Default is "Default assistant role prompt".
 - `USER_ROLE_PROMPT`: Sets the user's role prompt. Default is "Default user role prompt".
