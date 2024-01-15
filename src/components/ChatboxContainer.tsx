@@ -10,6 +10,7 @@ import MessagesContainer from './MessagesContainer';
 import useChatLogic from "./hooks/useChatLogic"
 
 const Container = styled(motion.div) <{ isFullscreen: boolean, isFolded: boolean }>`
+  z-index: 1000;
   position: fixed;
   right: 0;
   bottom: 0;
