@@ -47,23 +47,23 @@ const StyledTextarea = styled(TextareaAutosize).attrs(() => ({
 
 const SendButton = styled.button`
   position: absolute;
-  right: 15px; // Distance from the right edge of the InputContainer
-  top: 50%; // Start at the vertical center of the InputContainer
-  transform: translateY(-50%); // Shift upwards by half of its own height
+  right: 15px; 
+  top: 50%; 
+  transform: translateY(-50%); 
   background: none;
   border: none;
   cursor: pointer;
   padding: 0;
 
   svg {
-    width: 24px; // Adjust if needed
-    height: 24px; // Adjust if needed
-    fill: rgba(67, 101, 107, 0.597); // Normal state color
+    width: 24px; 
+    height: 24px; 
+    fill: rgba(67, 101, 107, 0.597); 
 
     &:hover {
-      fill: rgb(255, 255, 255); // Hover state color
-      stroke: #FFF; // Add a stroke or change as needed
-      stroke-width: 1px; // Adjust stroke width as needed
+      fill: rgb(255, 255, 255); 
+      stroke: #FFF;
+      stroke-width: 1px;
     }
   }
 
@@ -77,12 +77,11 @@ const FloatingInput: React.FC<FloatingInputProps> = ({ onNewMessage, isResponseR
 
 
   useEffect(() => {
-    console.log('isLoading: ', isLoading);
-    if (!isLoading && inputRef.current !== null) {
+    if (!isLoading && inputRef.current) {
       inputRef.current.focus();
+      inputRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }, [isLoading]);
-
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     const isMobile = window.innerWidth <= 768;

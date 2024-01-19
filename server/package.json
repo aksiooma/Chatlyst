@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev:server": "nodemon --watch ./src -e ts,tsx --exec \"ts-node ./src/server.ts\"",
+    "start:backend": "nodemon --watch ./src -e ts,tsx --exec \"ts-node ./src/server.ts\"",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "start": "node dist/server.js",
