@@ -33,8 +33,6 @@ const TypingAnimationContainer = styled.div`
   border-radius: 5px;
 `;
 
-
-
 const TypingAnimation: React.FC = () => {
     
   return (

@@ -2,7 +2,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import TypingAnimation from './TypingAnimation';  // I'm assuming this comes from another component
+import TypingAnimation from './TypingAnimation';
 import { MessagesListProps } from './types/types';
 
 

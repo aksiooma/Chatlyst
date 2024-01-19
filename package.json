@@ -4,10 +4,12 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "concurrently \"tsc && vite build\" \"npm run build:server\"",
+    "dev": "vite --mode development ",
+    "build": "vite build --mode production concurrently \"tsc && vite build\" \"npm run build:server\"",
     "build:server": "cd server && npm run build",
-    "start": "concurrently \"npm run dev\" \"npm --prefix ./server run dev:server\"",
+    "start": "concurrently \"npm run start:frontend\" \"npm --prefix ./server run start:backend\"",
+    "start:frontend": "vite --host --port 3001",
+    "start:backend": "cd server && npm run dev:server",
     "start:prod:server": "node server.js",
     "start:prod": "concurrently \"npm run start:prod:server\" \"serve -s dist\"",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
@@ -42,7 +44,7 @@
     "nodemon": "^3.0.1",
     "ts-node": "^10.9.1",
     "tsc-watch": "^6.0.4",
-    "typescript": "^5.2.2",
+    "typescript": "^5.3.3",
     "vite": "^4.5.0",
     "vite-plugin-qrcode": "^0.2.2"
   }

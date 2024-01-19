@@ -50,8 +50,6 @@ const MinimizeIcon = () => (
   </SvgWrapper>
 );
 
-
-
 const animationVariants = {
   open: {
     top: 0,
@@ -99,11 +97,10 @@ const ChatboxContainer: React.FC<ChatboxContainerProps> = ({ isFullscreen: propI
     setIsFolded,
     setIsResponseReceived,
     setHoneypotValue,
-
+    
   } = useChatLogic({ propIsFullscreen, propIsFolded });
 
   const [haloState, setHaloState] = useState<HaloState>('active');
-
   const MAX_RETRIES = 3;
 
   const sendMessageToServer = async (formattedMessages: any[], attempt = 1): Promise<AxiosResponse> => {
@@ -199,6 +196,7 @@ const ChatboxContainer: React.FC<ChatboxContainerProps> = ({ isFullscreen: propI
 
   const toggleView = () => {
     setIsFullscreen(prevState => !prevState);
+
   };
 
   const toggleFold = () => {
