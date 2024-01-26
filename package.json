@@ -13,7 +13,8 @@
     "start:prod:server": "node server.js",
     "start:prod": "concurrently \"npm run start:prod:server\" \"serve -s dist\"",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "tsc": "tsc"
   },
   "dependencies": {
     "@types/axios": "^0.14.0",

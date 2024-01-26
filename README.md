@@ -2,7 +2,7 @@
 
 # WittyAI Chatbot
 ## Overview
-WittyAI is a chatbot application designed to bring humor and cleverness to everyday interactions. Inspired by the playful banter of online communities like Reddit, this chatbot stands out with its sassy and sarcastic demeanor. It's built to assist users in their daily tasks and queries while maintaining a unique, engaging personality. This version of WittyAI is the "skeleton" version, which lays the foundation without predefined roles.
+WittyAI is a chatbot application originally designed to bring humor and cleverness to everyday interactions. Inspired by the playful banter of online communities like Reddit, this chatbot stands out with its sassy and sarcastic demeanor. It's built to assist users in their daily tasks and queries while maintaining a unique, engaging personality. This version of WittyAI is the "skeleton" version, which lays the foundation without predefined roles.
 
 ## Features
 - Minimalistic UI
