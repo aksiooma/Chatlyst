@@ -9,16 +9,12 @@ export default ({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
 
   return defineConfig({
-  plugins: [react(), qrcode(),  viteCommonjs()], 
+  plugins: [react({}), qrcode(),  viteCommonjs()], 
+  define: { global: 'globalThis'},
   server: {
     port: parseInt(env.VITE_PORT),
     host: '0.0.0.0',
   },
-  build: {
-    rollupOptions: {
-      external: ['axios']
-    }
-  }
   
 });
 }
