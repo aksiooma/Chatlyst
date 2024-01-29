@@ -12,6 +12,11 @@ export default ({ mode }) => {
   server: {
     port: parseInt(env.VITE_PORT),
     host: '0.0.0.0',
+  },
+  build: {
+    rollupOptions: {
+      external: ['axios']
+    }
   }
   
 });
