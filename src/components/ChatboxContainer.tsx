@@ -5,7 +5,8 @@ import { motion } from 'framer-motion';
 import ChatHeader from './ChatHeader';
 import ChatFooter from './ChatFooter'
 import { ChatboxContainerProps, HaloState } from './types/types';
-import axios, { AxiosResponse, AxiosError } from 'axios';
+import axios from 'axios';
+import {AxiosResponse, AxiosError} from 'axios'
 import MessagesContainer from './MessagesContainer';
 import useChatLogic from "./hooks/useChatLogic"
 
