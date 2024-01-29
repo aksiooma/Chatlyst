@@ -1,4 +1,5 @@
 import { defineConfig, loadEnv } from 'vite'
+import { viteCommonjs } from '@originjs/vite-plugin-commonjs'
 import react from '@vitejs/plugin-react'
 import { qrcode } from 'vite-plugin-qrcode';
 
@@ -8,7 +9,7 @@ export default ({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
 
   return defineConfig({
-  plugins: [react(), qrcode() ], 
+  plugins: [react(), qrcode(),  viteCommonjs()], 
   server: {
     port: parseInt(env.VITE_PORT),
     host: '0.0.0.0',
