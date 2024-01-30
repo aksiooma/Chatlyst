@@ -9,11 +9,16 @@ export default ({ mode }) => {
 
   return defineConfig({
   plugins: [react({}), qrcode()], 
-  define: { global: 'globalThis'},
   server: {
     port: parseInt(env.VITE_PORT),
     host: '0.0.0.0',
   },
+  build: {
+    rollupOptions: {
+      external: ['axios', 'react-textarea-autosize']
+    }
+  },
+
   
 });
 }
