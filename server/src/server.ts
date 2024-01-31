@@ -59,11 +59,13 @@ Database.initDB()
     app.get('/history', getChatHistory);
     app.get('/greeting', getGreeting);
 
-    const PORT = parseInt(process.env.VITE_PORT ?? '5173', 10);
+    // const PORT = parseInt(process.env.VITE_PORT ?? '5173', 10) in development;
+    const PORT = process.env.PORT || 5173;
 
     app.listen(PORT, '0.0.0.0', () => {
       console.log(`Server is running on port ${PORT}`);
     });
+
 
     // Setting an interval for database cleanup
     setInterval(() => {
