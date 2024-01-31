@@ -30,7 +30,7 @@ try {
 
 const app = express();
 
-//Middleware configurations: 
+//Middleware configurations:
 // 1. Explicit CORS configuration
 configureCors(app);
 // 2. Use body parser middleware
@@ -59,8 +59,8 @@ Database.initDB()
     app.get('/history', getChatHistory);
     app.get('/greeting', getGreeting);
 
-    // const PORT = parseInt(process.env.VITE_PORT ?? '5173', 10) in development;
-    const PORT = process.env.PORT || 5173;
+    const PORT = parseInt(process.env.VITE_PORT ?? '5173', 10);
+    // const PORT = process.env.PORT || 5173;
 
     app.listen(PORT, '0.0.0.0', () => {
       console.log(`Server is running on port ${PORT}`);
