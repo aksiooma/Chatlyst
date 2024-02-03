@@ -11,7 +11,7 @@ const configureSession = (app: Application) => {
         cookie: {
             maxAge: 24 * 60 * 60 * 1000, // 24 hours
             httpOnly: true,
-            secure: true  // set this to true if you're using HTTPS
+            secure: false  // set this to true if you're using HTTPS
         }
     }));
 }
