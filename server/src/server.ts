@@ -4,7 +4,7 @@ import bodyParser from 'body-parser';
 import Database from './database';
 import { cleanupDatabase } from './dbCleanup';
 import configureRateLimiter from './middlewares/configureRateLimiter';
-import configureSession from './middlewares/configureSession ';
+import configureSession from './middlewares/configureSession';
 import configureCors from './middlewares/configureCors';
 import configureLogger from './middlewares/configureLogger';
 import configureCachePolicy from './middlewares/configureCachePolicy';
@@ -59,10 +59,10 @@ Database.initDB()
     app.get('/history', getChatHistory);
     app.get('/greeting', getGreeting);
 
-    // const PORT = parseInt(process.env.PORT ?? '5173', 10);
-    const PORT = process.env.PORT || 5173;
+    const PORT = parseInt(process.env.VITE_PORT ?? '5173', 10); // Development
+    // const PORT = process.env.PORT || 5173; // Production
 
-    app.listen(PORT, () => {
+    app.listen(PORT, '0.0.0.0', () => { //'0.0.0.0' for Development
       console.log(`Server is running on port ${PORT}`);
     });
 
