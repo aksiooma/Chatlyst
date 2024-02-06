@@ -1,5 +1,5 @@
 // src/components/ChatboxContainer.tsx
-import { useState } from 'react';
+import { useState, useEffect} from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import ChatHeader from './ChatHeader';
@@ -26,7 +26,6 @@ const Container = styled(motion.div) <{ isFullscreen: boolean, isFolded: boolean
   margin-bottom: 15px;
 `;
 
-
 const SvgWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -51,31 +50,60 @@ const MinimizeIcon = () => (
   </SvgWrapper>
 );
 
-const animationVariants = {
-  open: {
-    top: 0,
-    right: 0,
-    width: '100%',
-    height: '100%',
-    transition: { duration: 0.6, ease: "anticipate" }
-  },
-  closed: {
-    top: 'auto',
-    right: 0,
-    bottom: 0,
-    width: '450px',
-    height: '550px',
-    transition: { duration: 0.7, ease: "anticipate" }
-  },
+const useResponsiveVariants = () => {
+  const initialVariants = {
+    open: {
+      top: 0,
+      right: 0,
+      width: '100%',
+      height: '100%',
+      transition: { duration: 0.6, ease: "anticipate" }
+    },
+    closed: {
+      top: 'auto',
+      right: 0,
+      bottom: 0,
+      width: '450px',
+      height: '550px',
+      transition: { duration: 0.7, ease: "anticipate" }
+    },
+    folded: {
+      top: 'auto',
+      right: 0,
+      bottom: 0,
+      width: '200px',
+      height: '100px',
+      transition: { duration: 0.5, ease: "anticipate" }
+    },
+  };
 
-  folded: {
-    top: 'auto',
-    right: 0,
-    bottom: 0,
-    width: '200px',
-    height: '100px',
-    transition: { duration: 0.5, ease: "anticipate" }
-  },
+  const [animationVariants, setAnimationVariants] = useState(initialVariants);
+
+  useEffect(() => {
+    const updateVariants = () => {
+      const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
+      const isMediumScreen = window.matchMedia("(max-width: 1366px)").matches;
+    
+      setAnimationVariants(prevVariants => ({
+        ...prevVariants,
+        closed: {
+          ...prevVariants.closed,
+          width: isSmallScreen ? '100%' : isMediumScreen ? '300px' : '410px',
+          height: isSmallScreen ? '100%' : isMediumScreen ? '440px' : '550px',
+        },
+      }));
+    };
+    // Call the function on initial component mount
+    updateVariants();
+
+    // Add event listener for window resize
+    window.addEventListener('resize', updateVariants);
+
+    // Remove event listener on cleanup
+    return () => window.removeEventListener('resize', updateVariants);
+  }, []);
+
+  return animationVariants;
 };
 
 
@@ -103,6 +131,9 @@ const ChatboxContainer: React.FC<ChatboxContainerProps> = ({ isFullscreen: propI
 
   const [haloState, setHaloState] = useState<HaloState>('active');
   const MAX_RETRIES = 3;
+  const animationVariants = useResponsiveVariants();
+
+  
 
   const sendMessageToServer = async (formattedMessages: any[], attempt = 1): Promise<AxiosResponse> => {
     try {

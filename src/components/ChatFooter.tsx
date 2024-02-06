@@ -6,7 +6,7 @@ import { ChatFooterProps } from './types/types';
 
 const ChatFooter = styled(motion.div) <{ isFolded: boolean }>`
   display: ${props => props.isFolded ? 'none' : 'block'};
-  padding: 30px;
+  padding: 20px;
   background: rgba(0, 0, 0, 0.1);
   border-top: 1px solid rgba(125, 0, 174, 0.1);
   border-radius: 30px;

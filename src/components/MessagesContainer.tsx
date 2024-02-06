@@ -19,7 +19,6 @@ const messageAnimation = {
     overflow-y: auto;
     max-height: calc(100% - 100px);  /* Adjust 100px to accommodate your header and footer */
     margin-top: 10px;
-   
   `;
   
   const ChatBubble = styled(motion.div)`
