@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --mode development ",
+    "dev": "concurrently \"npm run start:frontend\"",
     "build": "vite build",
     "build:server": "cd server && npm run build",
     "start": "concurrently \"npm run start:frontend\" \"npm --prefix ./server run start:backend\"",
@@ -16,7 +16,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@types/axios": "^0.14.0",
     "@types/express-session": "^1.17.10",
     "@types/styled-components": "^5.1.29",
     "axios": "^1.6.7",

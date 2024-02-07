@@ -133,8 +133,6 @@ const ChatboxContainer: React.FC<ChatboxContainerProps> = ({ isFullscreen: propI
   const MAX_RETRIES = 3;
   const animationVariants = useResponsiveVariants();
 
-  
-
   const sendMessageToServer = async (formattedMessages: any[], attempt = 1): Promise<AxiosResponse> => {
     try {
       return await axios.post(`${API_URL}/message`, {
@@ -235,8 +233,7 @@ const ChatboxContainer: React.FC<ChatboxContainerProps> = ({ isFullscreen: propI
     setIsFolded(prev => !prev);
   };
 
-
-
+  
   const renderIcon = () => {
     // Using matchMedia to check if the screen width is less than or equal to 768px
     const isMobile = window.matchMedia("(max-width: 768px)").matches;
