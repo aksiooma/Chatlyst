@@ -30,7 +30,8 @@ WittyAI is a chatbot application originally designed to bring humor and cleverne
 ### Database
 - SQLite: Stores messages and chat history and manages predefined greetings and responses.
 
-### Performance
+### Security and Performance
+- Security: Implements input validation and sanitation to prevent malicious inputs.
 - Performance Optimization: Includes rate limiting and consideration for reCAPTCHA implementation.
 - Cache Policy Configuration: For enhanced performance of static assets.
 

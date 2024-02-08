@@ -80,10 +80,12 @@ const useResponsiveVariants = () => {
   const [animationVariants, setAnimationVariants] = useState(initialVariants);
 
   useEffect(() => {
-    const updateVariants = () => {
-      const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
+ const updateVariants = () => {
+      const isSmallWidth= window.matchMedia("(max-width: 768px)").matches;
+      const isSmallHeight = window.matchMedia("(max-height: 688px)").matches;
+      const isSmallScreen = isSmallWidth || isSmallHeight;
       const isMediumScreen = window.matchMedia("(max-width: 1366px)").matches;
-    
+      
       setAnimationVariants(prevVariants => ({
         ...prevVariants,
         closed: {
@@ -105,7 +107,6 @@ const useResponsiveVariants = () => {
 
   return animationVariants;
 };
-
 
 const ChatboxContainer: React.FC<ChatboxContainerProps> = ({ isFullscreen: propIsFullscreen, isFolded: propIsFolded }) => {
   const {
@@ -132,6 +133,8 @@ const ChatboxContainer: React.FC<ChatboxContainerProps> = ({ isFullscreen: propI
   const [haloState, setHaloState] = useState<HaloState>('active');
   const MAX_RETRIES = 3;
   const animationVariants = useResponsiveVariants();
+  const isMobileWidth = window.matchMedia("(max-width: 768px)").matches;
+  const isMobileHeight = window.matchMedia("(max-height: 680px)").matches;
 
   const sendMessageToServer = async (formattedMessages: any[], attempt = 1): Promise<AxiosResponse> => {
     try {
@@ -150,7 +153,6 @@ const ChatboxContainer: React.FC<ChatboxContainerProps> = ({ isFullscreen: propI
     }
   };
   
-
   const handleChatMessages = async (messageText: string) => {
 
     function breakLongSequences(input: string, maxLength: number = 61): string {
@@ -166,7 +168,6 @@ const ChatboxContainer: React.FC<ChatboxContainerProps> = ({ isFullscreen: propI
         return result;
       });
     }
-
 
     if (messageText.trim() !== '' && isResponseReceived) {
 
@@ -235,9 +236,9 @@ const ChatboxContainer: React.FC<ChatboxContainerProps> = ({ isFullscreen: propI
 
   
   const renderIcon = () => {
-    // Using matchMedia to check if the screen width is less than or equal to 768px
-    const isMobile = window.matchMedia("(max-width: 768px)").matches;
-  
+    // Using matchMedia to check the if screen width or height matches to mobile
+    const isMobile = isMobileWidth || isMobileHeight;
+
     // If it's mobile, we return an empty fragment to render nothing
     if (isMobile) {
       return <></>;
