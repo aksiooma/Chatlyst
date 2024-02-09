@@ -1,5 +1,3 @@
-
-
 # WittyAI Chatbot
 
 <img src=https://res.cloudinary.com/dxlzstktn/image/upload/v1707327094/Prome/WittyScreenshot_jap9jw.png alt="Chatbot">
@@ -16,7 +14,6 @@ WittyAI is a chatbot application originally designed to bring humor and cleverne
 
 ## Key Components
 ### Frontend
-
 - React-based User Interface: A user-friendly interface for interaction with the chatbot.
 - Responsive Chat Window: Includes a chat window with a floating input area and message display, styled using styled-components.
 - Input Handling: Manages user inputs, sends them to the backend, and displays the chatbot's responses.
@@ -35,21 +32,9 @@ WittyAI is a chatbot application originally designed to bring humor and cleverne
 - Performance Optimization: Includes rate limiting and consideration for reCAPTCHA implementation.
 - Cache Policy Configuration: For enhanced performance of static assets.
 
-### Development and Testing
-
 #### Modular Codebase
 
 The project is structured to ensure maintainability and scalability, facilitating a clean separation of concerns between the frontend and backend. This structure supports easier updates, testing, and understanding of the codebase.
-
-#### Deployment Strategies
-Deployment presented challenges, particularly around the use of submodules and monorepos. While submodules offer a neat way to organize and separate concerns, deploying them to different hosting services (like Vercel for the frontend and Heroku for the backend) introduced complexity.
-
-- **Submodule vs. Monorepo**: The initial approach used a submodule structure to separate the frontend and backend, intending for cohesive development and deployment. However, this led to challenges with dependency management and deployment pipelines, as different services have distinct ways of handling such setups.
-- **Simplification and Separation**: To address these challenges, the project was restructured into a monorepo for the frontend, with the backend deployed separately. This adjustment simplified the deployment process, especially considering the differences in handling static sites and server applications between platforms like Vercel and Heroku.
-
-### Challenges and Solutions
-
-Throughout development, challenges such as database initialization, error handling, and environment variable management were tackled. Efforts were made to enhance the user experience and application performance through responsive design and caching strategies.
 
 ## Getting Started
 
@@ -58,7 +43,7 @@ To get started with WittyAI, follow these steps:
 1. **Clone the Repository**
 
 ```bash
-git clone https://github.com/yourusername/WittyAI.git
+git clone https://github.com/aksiooma/WittyAI.git
 ```
 
 2. **Install Dependencies**
@@ -69,6 +54,11 @@ Navigate to the WittyAI directory and install the necessary packages.
 cd WittyAI
 npm install
 ```
+```bash
+cd WittyAI/server
+npm install
+```
+
 3. **Environment Setup**
 
 Set up your .env file with the required API keys and configurations.
@@ -125,7 +115,8 @@ GREETING = []
 Interact with WittyAI through its web interface or integrate it into your existing platforms. Simply start by typing in your query or command and let WittyAI take care of the rest with its flair.
 
 ## Contributing
-Contributions to WittyAI are welcome! If you have suggestions or improvements, feel free to fork the repository and submit a pull request.
+Contributions to WittyAI are welcome. If you have suggestions or improvements, feel free to fork the repository and submit a pull request.
+
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
