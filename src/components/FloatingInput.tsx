@@ -109,6 +109,9 @@ const FloatingInput: React.FC<FloatingInputProps> = ({ onNewMessage, isResponseR
     setText('');
   };
 
+
+
+
   return (
     <>
       <InputContainer>

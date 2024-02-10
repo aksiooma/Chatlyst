@@ -1,5 +1,5 @@
 // MessagesList.tsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import TypingAnimation from './TypingAnimation';
@@ -7,12 +7,12 @@ import { MessagesListProps } from './types/types';
 
 
 const messageAnimation = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
-  };
-  
-  
-  const MessagesContainer = styled.div`
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
+};
+
+
+const MessagesContainer = styled.div`
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -20,8 +20,8 @@ const messageAnimation = {
     max-height: calc(100% - 100px);  /* Adjust 100px to accommodate your header and footer */
     margin-top: 10px;
   `;
-  
-  const ChatBubble = styled(motion.div)`
+
+const ChatBubble = styled(motion.div)`
     white-space: normal;
     display:flex;
     padding: 10px;
@@ -35,15 +35,15 @@ const messageAnimation = {
     text-shadow: 0.4px 0.4px 0px hsla(200, 44%, 50%, 0.5);
     
   `;
-  
-  const UserMessage = styled(ChatBubble)`
+
+const UserMessage = styled(ChatBubble)`
    
     background-color: rgba(228, 211, 228, 1);
     color: rgba(45, 30, 45, 1);
    
   `;
-  
-  const ResponseMessage = styled(ChatBubble)`
+
+const ResponseMessage = styled(ChatBubble)`
    
     background: linear-gradient(30deg,  rgba(94, 44, 61, 1) 0%, 
     rgba(17, 22, 47, 1) 90%,
@@ -53,6 +53,34 @@ const messageAnimation = {
   `;
 
 const MessagesList: React.FC<MessagesListProps> = ({ messages, isLoading }) => {
+  const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
+
+  
+  useEffect(() => {
+    const handleResize = () => {
+      setViewportHeight(window.innerHeight);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+  }, [viewportHeight]);
+
+
+  useEffect(() => {
+    const messagesContainer = document.getElementById('MessagesCont');
+    if (messagesContainer) {
+      messagesContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }, []);
+
+
+
   return (
     <MessagesContainer id="MessagesCont">
       {messages.map((message, index) => (
