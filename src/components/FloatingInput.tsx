@@ -38,6 +38,8 @@ const StyledTextarea = styled(TextareaAutosize).attrs(() => ({
   box-shadow: 5px 5px 5px 5px rgba(24, 14, 24, 0.5);
   overflow-y: auto;
   justify-content: center;
+  z-index: 9;
+
 
   &:focus {
     background-color: rgba(33, 33, 33, 1);
@@ -53,7 +55,11 @@ const SendButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0;
+  padding: 0px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-right: -1px;
+  z-index: 10;
 
   svg {
     width: 24px; 
