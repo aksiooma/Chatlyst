@@ -111,6 +111,28 @@ USER_ROLE_PROMPT=Your custom user role prompt
 GREETING = []
 ...
 ```
+
+## Port Configuration for Development and Production
+
+In this project, the server is configured to listen on different ports for development and production environments:
+
+    - Development: The server uses a custom port defined in process.env.VITE_PORT or defaults to 5173.
+    - Production: When deployed to a platform like Heroku, the server uses the dynamically assigned port in process.env.PORT.
+
+### The port configuration in the code looks like this:
+```bash
+// For Development
+const PORT = parseInt(process.env.VITE_PORT ?? '5173', 10); 
+
+// For Production (e.g., on Heroku)
+const PORT = process.env.PORT || 5173;
+
+// Start the server, '0.0.0.0' is used for Development
+app.listen(PORT, '0.0.0.0', () => { 
+  console.log(`Server is running on port ${PORT}`);
+});
+```
+
 ## Usage
 Interact with WittyAI through its web interface or integrate it into your existing platforms. Simply start by typing in your query or command and let WittyAI take care of the rest with its flair.
 
