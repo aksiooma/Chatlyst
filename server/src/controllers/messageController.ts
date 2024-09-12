@@ -28,7 +28,7 @@ export async function sendToChatGPT(messages: Messages) {
         const response = await axios.post(
             API_URL,
             {
-                model: 'gpt-3.5-turbo-16k',
+                model: 'gpt-4o-mini',
                 messages: messages,
                 temperature: 0.8,
                 top_p: 1,
