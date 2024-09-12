@@ -59,10 +59,10 @@ Database.initDB()
     app.get('/history', getChatHistory);
     app.get('/greeting', getGreeting);
 
-    const PORT = parseInt(process.env.VITE_PORT ?? '5173', 10); // Development
-    // const PORT = process.env.PORT || 5173; // Production
+    // const PORT = parseInt(process.env.VITE_PORT ?? '5173', 10); // Development
+    const PORT = process.env.PORT || 5173; // Production
 
-    app.listen(PORT, '0.0.0.0', () => { //'0.0.0.0' for Development
+    app.listen(PORT, () => { //'0.0.0.0' for Development
       console.log(`Server is running on port ${PORT}`);
     });
 
