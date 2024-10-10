@@ -6,7 +6,7 @@ import avatarLarge from '../assets/ai_avatar_v2_large.webp';
 import avatarMedium from '../assets/ai_avatar_v2_medium.webp';
 import avatarSmall from '../assets/ai_avatar_v2_small.webp';
 import { ChatboxHeaderProps } from './types/types';
-
+import { useHaloState } from '../context/HaloStateContext';
 
 const StyledHeader = styled(motion.div) <{ isFullscreen: boolean, isFolded: boolean }>`
 display: flex;
@@ -36,11 +36,12 @@ background: radial-gradient(
 const IconContainer = styled.div`
   display: flex;
   align-items: center;
-  justify-content: flex-end; /* aligns items to the right */
+  justify-content: flex-end;
   position: absolute;
-  top: 10px; /* adjust as needed */
-  right: 10px; /* adjust as needed */
-  gap: 10px; /* space between icons */
+  top: 10px; 
+  right: 10px; 
+  gap: 10px; 
+  
 `;
 
 const SvgWrapper = styled.div`
@@ -77,41 +78,38 @@ const FoldButton = styled(IconButton)`  // inherits styles from IconButton
 
 const haloVariants = {
   active: {
-    boxShadow: '0 0 10px 4px rgba(255, 177, 58, 1)', 
+    boxShadow: '0 0 10px 4px rgba(255, 177, 58, 1)',
   },
   error: {
     boxShadow: '0 0 10px 4px rgba(160, 20, 40, 1)',
   }
 };
 
-
-
 // Halo styled component
 const HaloContainer = styled(motion.div)`
-  display: inline-flex; // Helps with centering
-  align-items: center;  // Vertical centering
-  justify-content: center;  // Horizontal centering
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 50%;
-  padding: 10px;  
+  padding: 10px;
   background: transparent;
-  width: 45px;  
-  height: 45px;  
-  position: relative; 
-  overflow: visible; 
+  width: 45px;
+  height: 45px;
+  position: relative;
+  overflow: visible;
 `;
-
 const Avatar = styled.img`
 `
 
 const ChatboxHeader: React.FC<ChatboxHeaderProps> = ({
   isFullscreen,
   isFolded,
-  haloState,
   toggleView,
   toggleFold,
   renderIcon,
   showFullscreenIcon
 }) => {
+  const { haloState } = useHaloState();
   const currentAvatar = useResponsiveAvatar({
     avatarSmall: avatarSmall,
     avatarMedium: avatarMedium,
@@ -119,21 +117,25 @@ const ChatboxHeader: React.FC<ChatboxHeaderProps> = ({
   });
 
   return (
-  <StyledHeader isFullscreen={isFullscreen} isFolded={isFolded}>
-    <HaloContainer variants={haloVariants} initial={haloState} animate={haloState}>
-      <Avatar src={currentAvatar} width="70" height="70" className="zoom me-3 mx-1" alt="Chatbot Avatar" />
-    </HaloContainer>
-    <IconContainer>
-      {!isFolded && showFullscreenIcon && (
-        <IconButton onClick={toggleView}>
-          {renderIcon()}
-        </IconButton>
-      )}
-      <FoldButton onClick={toggleFold}>
-        <FoldIcon />
-      </FoldButton>
-    </IconContainer>
-  </StyledHeader>
-);
-    }
+    <StyledHeader isFullscreen={isFullscreen} isFolded={isFolded}>
+      <HaloContainer
+        variants={haloVariants}
+        initial={haloState}
+        animate={haloState}
+      >
+        <Avatar src={currentAvatar} width="70" height="70" alt="Chatbot Avatar" />
+      </HaloContainer>
+      <IconContainer>
+        {!isFolded && showFullscreenIcon && (
+          <IconButton onClick={toggleView}>
+            {renderIcon()}
+          </IconButton>
+        )}
+        <FoldButton onClick={toggleFold}>
+          <FoldIcon />
+        </FoldButton>
+      </IconContainer>
+    </StyledHeader>
+  );
+}
 export default React.memo(ChatboxHeader);

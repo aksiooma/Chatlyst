@@ -1,11 +1,13 @@
 
 import ChatboxContainer from './components/ChatboxContainer'
-
+import { HaloStateProvider } from '../src/context/HaloStateContext';
 
 function App() {
-  
+
   return (
-      <ChatboxContainer isFullscreen={false} isFolded={false}/>
+    <HaloStateProvider>
+      <ChatboxContainer isFullscreen={false} isFolded={false} />
+    </HaloStateProvider>
   )
 }
 

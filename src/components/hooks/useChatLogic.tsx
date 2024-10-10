@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { UseChatLogicProps } from '../types/types';
+import { useHaloState } from '../../context/HaloStateContext';
+
 type Message = { role: 'user' | 'assistant', content: string };
 
 const useChatLogic = ({ propIsFullscreen, propIsFolded }: UseChatLogicProps) => {
+  const { haloState, setHaloState } = useHaloState();
   const [messages, setMessages] = useState<Array<Message>>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(propIsFullscreen);
@@ -14,6 +17,8 @@ const useChatLogic = ({ propIsFullscreen, propIsFolded }: UseChatLogicProps) => 
   const [delayFooter, setDelayFooter] = useState(false);
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5173";
   const [honeypotValue, setHoneypotValue] = useState<string>('');
+  
+
 
   const scrollToBottom = () => {
     setTimeout(() => {
@@ -24,29 +29,39 @@ const useChatLogic = ({ propIsFullscreen, propIsFolded }: UseChatLogicProps) => 
 
   };
 
-  //Fetch chat history and greeting
   useEffect(() => {
+    let isCancelled = false;
 
     const fetchData = async () => {
+      setIsLoading(true);
+
       try {
-        // Fetch the greeting
-        const greetingResponse = await axios.get(`${API_URL}/greeting`, { withCredentials: true });
+        const greetingResponse = await axios.get(`${API_URL}/greeting`, { withCredentials: true, timeout: 10000 });
         const greeting = { role: 'assistant', content: greetingResponse.data.content };
 
-        // Fetch chat history from your database/API
-        const historyResponse = await axios.get(`${API_URL}/history`, { withCredentials: true });
+        const historyResponse = await axios.get(`${API_URL}/history`, { withCredentials: true, timeout: 10000 });
         const combinedMessages = [greeting, ...historyResponse.data];
 
-        setMessages(combinedMessages);
-        setIsLoading(false);
-        scrollToBottom()
-       
+        if (!isCancelled) {
+          setMessages(combinedMessages);
+          setIsLoading(false);
+          setIsResponseReceived(true); // Ensure this is set to true upon successful fetch
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
+        if (!isCancelled) {
+          setHaloState('error');
+          setIsResponseReceived(false);
+          setMessages(prevMessages => [...prevMessages, { role: 'assistant', content: 'Oops! It seems we are experiencing some technical difficulties. Please refresh the page and try again later.' }]);
+        }
       }
     };
 
     fetchData();
+
+    return () => {
+      isCancelled = true;
+    };
   }, []);
 
 
@@ -81,7 +96,7 @@ const useChatLogic = ({ propIsFullscreen, propIsFolded }: UseChatLogicProps) => 
     }
   }, [isFolded]);
 
-  
+
 
 
   const updateScreenSize = () => {
@@ -112,7 +127,6 @@ const useChatLogic = ({ propIsFullscreen, propIsFolded }: UseChatLogicProps) => 
     delayFooter,
     API_URL,
     honeypotValue,
-    
     scrollToBottom,
     setMessages,
     setIsLoading,

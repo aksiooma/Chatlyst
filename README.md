@@ -1,10 +1,10 @@
-# WittyAI Chatbot
+# Chatlyst - AI powered Chatbot
 
 <img src=https://res.cloudinary.com/dxlzstktn/image/upload/v1707327094/Prome/WittyScreenshot_jap9jw.png alt="Chatbot">
 
 
 ## Overview
-WittyAI is a chatbot application originally designed to bring humor and cleverness to everyday interactions. Inspired by the playful banter of online communities like Reddit, this chatbot stands out with its sassy and sarcastic demeanor. It's built to assist users in their daily tasks and queries while maintaining a unique, engaging personality. This version of WittyAI is the "skeleton" version, which lays the foundation without predefined roles.
+Chatlyst is a chatbot application originally designed to bring humor and cleverness to everyday interactions. Inspired by the playful banter of online communities like Reddit, this chatbot stands out with its sassy and sarcastic demeanor. It's built to assist users in their daily tasks and queries while maintaining a unique, engaging personality. This version of Chatlyst is the "skeleton" version, which lays the foundation without predefined roles.
 
 ## Features
 - Minimalistic UI
@@ -38,24 +38,24 @@ The project is structured to ensure maintainability and scalability, facilitatin
 
 ## Getting Started
 
-To get started with WittyAI, follow these steps:
+To get started with Chatlyst, follow these steps:
 
 1. **Clone the Repository**
 
 ```bash
-git clone https://github.com/aksiooma/WittyAI.git
+git clone https://github.com/aksiooma/Chatlyst.git
 ```
 
 2. **Install Dependencies**
 
-Navigate to the WittyAI directory and install the necessary packages.
+Navigate to the Chatlyst directory and install the necessary packages.
 
 ```bash
-cd WittyAI
+cd Chatlyst
 npm install
 ```
 ```bash
-cd WittyAI/server
+cd Chatlyst/server
 npm install
 ```
 
@@ -71,7 +71,7 @@ npm run start
 
 ## Backend Environment Variables
 
-To run the backend of the WittyAI project, you need to set the following environment variables in your `.env` file located in the backend directory:
+To run the backend of the Chatlyst project, you need to set the following environment variables in your `.env` file located in the backend directory:
 
 - `API_KEY`: The API key for accessing the OpenAI GPT services.
 - `API_URL`: The URL endpoint for the OpenAI API.
@@ -96,7 +96,7 @@ ALLOWED_ORIGINS=http://localhost:3000,https://example.com
 
 ## Configuration
 
-WittyAI allows you to customize the role prompts through environment variables. This feature provides the flexibility to change the behavior of the chatbot without altering the codebase. Below are the environment variables you can set to customize the role prompts:
+Chatlyst allows you to customize the role prompts through environment variables. This feature provides the flexibility to change the behavior of the chatbot without altering the codebase. Below are the environment variables you can set to customize the role prompts:
 - `GREETING`: A custom greeting message for the chatbot. This is a JSON-formatted string.
 - `SYSTEM_ROLE_PROMPT`: Sets the system's role prompt. Default is "Default system role prompt".
 - `ASSISTANT_ROLE_PROMPT`: Sets the assistant's role prompt. Default is "Default assistant role prompt".
@@ -134,10 +134,10 @@ app.listen(PORT, '0.0.0.0', () => {
 ```
 
 ## Usage
-Interact with WittyAI through its web interface or integrate it into your existing platforms. Simply start by typing in your query or command and let WittyAI take care of the rest with its flair.
+Interact with Chatlyst through its web interface or integrate it into your existing platforms. Simply start by typing in your query or command and let Chatlyst take care of the rest with its flair.
 
 ## Contributing
-Contributions to WittyAI are welcome. If you have suggestions or improvements, feel free to fork the repository and submit a pull request.
+Contributions to Chatlyst are welcome. If you have suggestions or improvements, feel free to fork the repository and submit a pull request.
 
 ## License
 

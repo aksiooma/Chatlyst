@@ -8,9 +8,8 @@ const ChatFooter = styled(motion.div) <{ isFolded: boolean }>`
   display: ${props => props.isFolded ? 'none' : 'block'};
   padding: 20px;
   background: rgba(0, 0, 0, 0.1);
-  border-top: 1px solid rgba(125, 0, 174, 0.1);
+  border-top: 2px solid rgba(255, 255, 255, 0.1);
   border-radius: 30px;
-
   @media (max-width: 768px) {
     border-radius: 0px;
   }
@@ -24,6 +23,7 @@ const Footer: React.FC<ChatFooterProps> = ({
   setHoneypotValue,
   delayRenderFloatingInput,
   isFolded,
+  isFullscreen,
 }) => (
   <ChatFooter isFolded={isFolded}>
     {delayRenderFloatingInput && (
@@ -31,6 +31,7 @@ const Footer: React.FC<ChatFooterProps> = ({
         onNewMessage={handleChatMessages}
         isResponseReceived={isResponseReceived}
         isLoading={isLoading}
+        isFullscreen={isFullscreen}
       />
     )}
     <input

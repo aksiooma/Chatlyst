@@ -1,17 +1,18 @@
 // src/components/ChatboxContainer.tsx
-import { useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import ChatHeader from './ChatHeader';
 import ChatFooter from './ChatFooter'
-import { ChatboxContainerProps, HaloState } from './types/types';
+import { ChatboxContainerProps } from './types/types';
 import axios from 'axios';
-import {AxiosResponse, AxiosError} from 'axios'
+import { AxiosResponse, AxiosError } from 'axios'
 import MessagesContainer from './MessagesContainer';
 import useChatLogic from "./hooks/useChatLogic"
+import { useHaloState } from '../context/HaloStateContext';
 
 const Container = styled(motion.div) <{ isFullscreen: boolean, isFolded: boolean }>`
-  z-index: 1000;
+  z-index: 2000;
   position: fixed;
   right: 0;
   bottom: 0;
@@ -80,18 +81,19 @@ const useResponsiveVariants = () => {
   const [animationVariants, setAnimationVariants] = useState(initialVariants);
 
   useEffect(() => {
- const updateVariants = () => {
-      const isSmallWidth= window.matchMedia("(max-width: 768px)").matches;
+    const updateVariants = () => {
+      const isSmallWidth = window.matchMedia("(max-width: 768px)").matches;
       const isSmallHeight = window.matchMedia("(max-height: 688px)").matches;
       const isSmallScreen = isSmallWidth || isSmallHeight;
       const isMediumScreen = window.matchMedia("(max-width: 1366px)").matches;
-      
+
       setAnimationVariants(prevVariants => ({
         ...prevVariants,
         closed: {
           ...prevVariants.closed,
           width: isSmallScreen ? '100%' : isMediumScreen ? '300px' : '410px',
           height: isSmallScreen ? '100%' : isMediumScreen ? '440px' : '550px',
+
         },
       }));
     };
@@ -107,6 +109,7 @@ const useResponsiveVariants = () => {
 
   return animationVariants;
 };
+
 
 const ChatboxContainer: React.FC<ChatboxContainerProps> = ({ isFullscreen: propIsFullscreen, isFolded: propIsFolded }) => {
   const {
@@ -127,15 +130,16 @@ const ChatboxContainer: React.FC<ChatboxContainerProps> = ({ isFullscreen: propI
     setIsFolded,
     setIsResponseReceived,
     setHoneypotValue,
-    
+
   } = useChatLogic({ propIsFullscreen, propIsFolded });
 
-  const [haloState, setHaloState] = useState<HaloState>('active');
+  const { haloState, setHaloState } = useHaloState();
   const MAX_RETRIES = 3;
   const animationVariants = useResponsiveVariants();
   const isMobileWidth = window.matchMedia("(max-width: 768px)").matches;
   const isMobileHeight = window.matchMedia("(max-height: 680px)").matches;
 
+  
   const sendMessageToServer = async (formattedMessages: any[], attempt = 1): Promise<AxiosResponse> => {
     try {
       return await axios.post(`${API_URL}/message`, {
@@ -146,43 +150,49 @@ const ChatboxContainer: React.FC<ChatboxContainerProps> = ({ isFullscreen: propI
       });
     } catch (error) {
       if (attempt < MAX_RETRIES) {
+        console.log(`Attempt ${attempt}: Retrying after error`);
+        await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
         return sendMessageToServer(formattedMessages, attempt + 1);
-      } else {
-        throw error;
       }
+      throw error;
     }
   };
-  
+
+  function breakLongSequences(input: string, maxLength: number = 61): string {
+    // This regular expression looks for sequences of non-space characters that are maxLength or longer.
+    const regex = new RegExp(`(\\S{${maxLength},})`, 'g');
+
+    return input.replace(regex, (match) => {
+      // Split the long word with a soft hyphen after each maxLength characters
+      let result = '';
+      for (let i = 0; i < match.length; i += maxLength) {
+        result += match.slice(i, i + maxLength) + '\u00AD';
+      }
+      return result;
+    });
+  }
+
   const handleChatMessages = async (messageText: string) => {
-
-    function breakLongSequences(input: string, maxLength: number = 61): string {
-      // This regular expression looks for sequences of non-space characters that are maxLength or longer.
-      const regex = new RegExp(`(\\S{${maxLength},})`, 'g');
-
-      return input.replace(regex, (match) => {
-        // Split the long word with a soft hyphen after each maxLength characters
-        let result = '';
-        for (let i = 0; i < match.length; i += maxLength) {
-          result += match.slice(i, i + maxLength) + '\u00AD';
-        }
-        return result;
-      });
+    if (!messageText.trim() || !isResponseReceived) {
+      // Early exit or queue messages if not ready to send
+      console.log("Attempt to send message when not ready or no text.");
+      return;
     }
 
     if (messageText.trim() !== '' && isResponseReceived) {
 
       // Add user message
+      setIsLoading(true);
       setMessages(prevMessages => [...prevMessages, { role: 'user', content: breakLongSequences(messageText) }]);
       scrollToBottom();
       // Set to false when a new user message is sent
       setIsResponseReceived(false);
 
       // Set loading to true to start the loading animation
-      setIsLoading(true);
-
+    
       try {
         const formattedMessages = [...messages, { role: 'user', content: messageText }];
-      
+
         // Use the new function with retry logic
         const response = await sendMessageToServer(formattedMessages);
 
@@ -192,17 +202,19 @@ const ChatboxContainer: React.FC<ChatboxContainerProps> = ({ isFullscreen: propI
           setMessages(prevMessages => [...prevMessages, { role: 'assistant', content: botResponseText }]);
           // If the response contains a successful message from ChatGPT:
           setHaloState('active');
+          setIsResponseReceived(true);
           // Scroll to the bottom after adding a new response
           scrollToBottom();
         } else {
           console.error('Unexpected response from server:', response.data);
           setHaloState('error');  // Set to error if response is unexpected
-          setMessages(prevMessages => [...prevMessages, { role: 'assistant', content: 'I apologize, but the service is currently unavailable. Please try again later.' }]);
+          setIsResponseReceived(false); 
+          setMessages(prevMessages => [...prevMessages, { role: 'assistant', content: 'Oops! It seems we are experiencing some technical difficulties. Please refresh the page and try again later.' }]);
         }
 
       } catch (error) {
         const axiosError = error as AxiosError;
-    
+
         if (axiosError.response) {
           // Server responded with an error status
           console.error('Server responded with:', axiosError.response.data, axiosError.response.status, axiosError.response.headers);
@@ -215,7 +227,8 @@ const ChatboxContainer: React.FC<ChatboxContainerProps> = ({ isFullscreen: propI
         }
 
         setHaloState('error');  // Set to error if there's an Axios error or another issue
-        setMessages(prevMessages => [...prevMessages, { role: 'assistant', content: 'I apologize, but there seems to be an issue. Please try again later.' }]);
+        setIsResponseReceived(false); 
+        setMessages(prevMessages => [...prevMessages, { role: 'assistant', content: 'Oops! It seems we are experiencing some technical difficulties. Please refresh the page and try again later.' }]);
 
       } finally {
         setIsLoading(false);          // Stop the loading animation
@@ -224,33 +237,32 @@ const ChatboxContainer: React.FC<ChatboxContainerProps> = ({ isFullscreen: propI
     };
   };
 
-
   const toggleView = () => {
     setIsFullscreen(prevState => !prevState);
-
   };
 
   const toggleFold = () => {
     setIsFolded(prev => !prev);
   };
 
-  
+
+
   const renderIcon = () => {
-    // Using matchMedia to check the if screen width or height matches to mobile
+    // Using matchMedia to check if the screen width and height
     const isMobile = isMobileWidth || isMobileHeight;
 
     // If it's mobile, we return an empty fragment to render nothing
     if (isMobile) {
       return <></>;
     }
-  
+
     // Otherwise, return the appropriate icon based on the fullscreen state
     if (isFullscreen) {
       return <MinimizeIcon />;
     }
     return <FullscreenIcon />;
   };
-  
+
   return (
     <Container isFullscreen={isFullscreen} isFolded={isFolded} className={`header ${isFullscreen ? 'fullscreen' : ''}`}
       initial="folded"
@@ -260,7 +272,6 @@ const ChatboxContainer: React.FC<ChatboxContainerProps> = ({ isFullscreen: propI
         isFullscreen={isFullscreen}
         isFolded={isFolded}
         showFullscreenIcon={showFullscreenIcon}
-        haloState={haloState}
         toggleView={toggleView}
         toggleFold={toggleFold}
         renderIcon={renderIcon}
@@ -275,6 +286,7 @@ const ChatboxContainer: React.FC<ChatboxContainerProps> = ({ isFullscreen: propI
           setHoneypotValue={setHoneypotValue}
           delayRenderFloatingInput={delayRenderFloatingInput}
           isFolded={isFolded}
+          isFullscreen={isFullscreen}
         />}
     </Container>
   );
