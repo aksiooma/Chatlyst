@@ -6,7 +6,7 @@ export class Database {
 
   static async initDB(): Promise<sqlite3.Database> {
     return new Promise<sqlite3.Database>((resolve, reject) => {
-      const database = new sqlite3.Database('./chathistory.sqlite', (err) => {
+      const database = new sqlite3.Database('/tmp/chathistory.sqlite', (err) => {
         if (err) {
           reject(err);
           return;
