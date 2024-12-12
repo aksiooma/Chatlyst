@@ -6,11 +6,16 @@ export class Database {
 
   static async initDB(): Promise<sqlite3.Database> {
     return new Promise<sqlite3.Database>((resolve, reject) => {
-      const database = new sqlite3.Database('/tmp/chathistory.sqlite', (err) => {
+      const dbPath = '/tmp/chathistory.sqlite';
+      console.log(`Initializing database at: ${dbPath}`);
+
+      const database = new sqlite3.Database(dbPath, (err) => {
         if (err) {
+          console.error(`Failed to connect to database at ${dbPath}:`, err.message);
           reject(err);
           return;
         }
+        console.log(`Database connected at ${dbPath}`);
 
         database.run(`
           CREATE TABLE IF NOT EXISTS messages(
@@ -22,9 +27,11 @@ export class Database {
           )
         `, (runErr) => {
           if (runErr) {
+            console.error('Error creating messages table:', runErr.message);
             reject(runErr);
             return;
           }
+          console.log('Messages table created or already exists.');
 
           database.run(`
             CREATE TABLE IF NOT EXISTS greeting_messages(
@@ -33,9 +40,11 @@ export class Database {
             )
           `, (greetingErr) => {
             if (greetingErr) {
+              console.error('Error creating greeting_messages table:', greetingErr.message);
               reject(greetingErr);
             } else {
               Database.instance = database;
+              console.log('Database setup complete.');
               resolve(database);
             }
           });
@@ -43,6 +52,7 @@ export class Database {
       });
     });
   }
+
 
   static getInstance(): sqlite3.Database | null {
     return this.instance;

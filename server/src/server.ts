@@ -29,7 +29,7 @@ try {
 }
 
 const app = express();
-
+app.set('trust proxy', 1);
 //Middleware configurations:
 // 1. Explicit CORS configuration
 configureCors(app);
