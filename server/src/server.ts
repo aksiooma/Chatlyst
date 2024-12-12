@@ -30,6 +30,7 @@ try {
 
 const app = express();
 app.set('trust proxy', 1);
+
 //Middleware configurations:
 // 1. Explicit CORS configuration
 configureCors(app);
@@ -59,10 +60,10 @@ Database.initDB()
     app.get('/history', getChatHistory);
     app.get('/greeting', getGreeting);
 
-    const PORT = parseInt(process.env.VITE_PORT ?? '5173', 10); // Development
-    // const PORT = process.env.PORT || 5173; // Production
+    // const PORT = parseInt(process.env.VITE_PORT ?? '5173', 10); // Development
+    const PORT = process.env.PORT || 5173; // Production
 
-    app.listen(PORT,'0.0.0.0', () => { //Remove '0.0.0.0' for Production
+    app.listen(PORT, () => { //Remove '0.0.0.0' for Production
       console.log(`Server is running on port ${PORT}`);
     });
 
