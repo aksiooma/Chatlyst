@@ -1,63 +1,58 @@
-//database.ts
-import sqlite3 from 'sqlite3';
+// database.ts
+import { Pool, PoolClient } from 'pg';
 
 export class Database {
-  private static instance: sqlite3.Database | null = null;
+  private static pool: Pool | null = null;
 
-  static async initDB(): Promise<sqlite3.Database> {
-    return new Promise<sqlite3.Database>((resolve, reject) => {
-      const dbPath = '/tmp/chathistory.sqlite';
-      console.log(`Initializing database at: ${dbPath}`);
-
-      const database = new sqlite3.Database(dbPath, (err) => {
-        if (err) {
-          console.error(`Failed to connect to database at ${dbPath}:`, err.message);
-          reject(err);
-          return;
-        }
-        console.log(`Database connected at ${dbPath}`);
-
-        database.run(`
-          CREATE TABLE IF NOT EXISTS messages(
-            id INTEGER PRIMARY KEY,
-            session_id TEXT NOT NULL,
-            role TEXT NOT NULL,
-            content TEXT NOT NULL,
-            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-          )
-        `, (runErr) => {
-          if (runErr) {
-            console.error('Error creating messages table:', runErr.message);
-            reject(runErr);
-            return;
-          }
-          console.log('Messages table created or already exists.');
-
-          database.run(`
-            CREATE TABLE IF NOT EXISTS greeting_messages(
-              id INTEGER PRIMARY KEY,
-              content TEXT
-            )
-          `, (greetingErr) => {
-            if (greetingErr) {
-              console.error('Error creating greeting_messages table:', greetingErr.message);
-              reject(greetingErr);
-            } else {
-              Database.instance = database;
-              console.log('Database setup complete.');
-              resolve(database);
-            }
-          });
-        });
+  static async initDB(): Promise<void> {
+    if (!this.pool) {
+      console.log("Initializing database connection pool...");
+      this.pool = new Pool({
+        connectionString: process.env.DATABASE_URL, // Heroku provides this
+        ssl: {
+          rejectUnauthorized: false, // Required for Heroku
+        },
       });
-    });
+    }
+
+    try {
+      const client: PoolClient = await this.pool.connect();
+      console.log("Connected to PostgreSQL database.");
+
+      // Create messages table
+      await client.query(`
+        CREATE TABLE IF NOT EXISTS messages (
+          id SERIAL PRIMARY KEY,
+          session_id TEXT NOT NULL,
+          role TEXT NOT NULL,
+          content TEXT NOT NULL,
+          timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+      console.log("Messages table created or already exists.");
+
+      // Create greeting_messages table
+      await client.query(`
+        CREATE TABLE IF NOT EXISTS greeting_messages (
+          id SERIAL PRIMARY KEY,
+          content TEXT
+        )
+      `);
+      console.log("Greeting messages table created or already exists.");
+
+      client.release();
+      console.log("Database setup complete.");
+    } catch (err) {
+      console.error(`An error occurred: ${(err as Error).message}`);
+    }
   }
 
-
-  static getInstance(): sqlite3.Database | null {
-    return this.instance;
+  static async getClient(): Promise<PoolClient> {
+    if (!this.pool) {
+      throw new Error("Database not initialized. Call initDB() first.");
+    }
+    return this.pool.connect();
   }
 }
-
 
 export default Database;
