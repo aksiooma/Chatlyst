@@ -12,6 +12,7 @@ Chatlyst is a chatbot application originally designed to bring humor and clevern
 - Task Assistance: Helps with daily tasks and information retrieval.
 - Customizable AI Role. 
 
+
 ## Key Components
 ### Frontend
 - React-based User Interface: A user-friendly interface for interaction with the chatbot.
@@ -21,11 +22,13 @@ Chatlyst is a chatbot application originally designed to bring humor and clevern
 
 ### Backend
 - Node.js/Express: Manages API requests to the OpenAI GPT model.
-- Session Management: Handles session management and stores chat history in an SQLite database.
+- Session Management: Handles sessions and stores chat history in a PostgreSQL database (previously SQLite).
 - Security Features: Includes rate limiting, a honeypot mechanism for spam protection, logging (using Winston), and input sanitation.
+- Middleware Configurations: Provides trust proxy support, CORS handling, JSON parsing, and session and cache policy configurations.
 
 ### Database
-- SQLite: Stores messages and chat history and manages predefined greetings and responses.
+- PostgreSQL: Stores messages and chat history, managing predefined greetings and responses.
+- Database Cleanup: Periodically clears messages.
 
 ### Security and Performance
 - Security: Implements input validation and sanitation to prevent malicious inputs.
@@ -79,6 +82,11 @@ To run the backend of the Chatlyst project, you need to set the following enviro
 - `SESSION_SECRET`: A secret key used for securing sessions. Use a random, long string.
 - `PORT`: The port of the server.
 - `ALLOWED_ORIGINS`: The allowed CORS domains split by comma.
+- `POSTGRES_USER`: The username for the PostgreSQL database.
+- `POSTGRES_PASSWORD`: The password for the PostgreSQL database.
+- `POSTGRES_DB`: The name of the PostgreSQL database.
+- `POSTGRES_HOST`: The host address of the PostgreSQL database.
+- `POSTGRES_PORT`: The port number for PostgreSQL (default: 5432).
 
 **Example `.env` File:**
 
@@ -87,8 +95,13 @@ API_KEY=your_openai_api_key
 API_URL=https://api.openai.com/v1/chat/completions
 NODE_ENV=development
 SESSION_SECRET=your_random_secret
-PORT=your_server_port
+PORT=3000
 ALLOWED_ORIGINS=http://localhost:3000,https://example.com
+POSTGRES_USER=your_db_user
+POSTGRES_PASSWORD=your_db_password
+POSTGRES_DB=your_db_name
+POSTGRES_HOST=your_db_host
+POSTGRES_PORT=5432
 ...
 ```
 
@@ -116,22 +129,8 @@ GREETING = []
 
 In this project, the server is configured to listen on different ports for development and production environments:
 
-    - Development: The server uses a custom port defined in process.env.VITE_PORT or defaults to 5173.
-    - Production: When deployed to a platform like Heroku, the server uses the dynamically assigned port in process.env.PORT.
-
-### The port configuration in the code looks like this:
-```bash
-// For Development
-const PORT = parseInt(process.env.VITE_PORT ?? '5173', 10); 
-
-// For Production (e.g., on Heroku)
-const PORT = process.env.PORT || 5173;
-
-// Start the server, '0.0.0.0' is used for Development
-app.listen(PORT, '0.0.0.0', () => { 
-  console.log(`Server is running on port ${PORT}`);
-});
-```
+    - Development: The server uses a custom port defined in process.env.VITE_PORT or defaults to 3000.
+    - Production: In environments like Heroku, the server uses the dynamically assigned port from process.env.PORT.
 
 ## Usage
 Interact with Chatlyst through its web interface or integrate it into your existing platforms. Simply start by typing in your query or command and let Chatlyst take care of the rest with its flair.

@@ -7,7 +7,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 /server/log.json
-
+testing/
 
 node_modules
 /server/node_modules

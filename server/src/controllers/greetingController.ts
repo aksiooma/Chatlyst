@@ -1,10 +1,15 @@
 import { Request, Response } from 'express';
 import Database from '../database';
+import AppState from '../AppState';
 
 export async function getGreeting(req: Request, res: Response) {
   const db = Database.getInstance();
-  if (!db) {
-    return res.status(500).send('Database not initialized');
+  const appState = AppState.getInstance();
+
+  if (appState.isDbCleared()) {
+    console.log('Database was cleared. Resetting session greeting.');
+    delete (req.session as any).greeting;
+    appState.setDbCleared(false); // Reset the flag
   }
 
   if ((req.session as any).greeting) {
@@ -12,22 +17,17 @@ export async function getGreeting(req: Request, res: Response) {
   }
 
   try {
-    db.all('SELECT content FROM greeting_messages ORDER BY RANDOM() LIMIT 1', [], (err, rows) => {
-      if (err) {
-        console.error("Error fetching random greeting:", err);
-        return res.status(500).send('Internal Server Error');
-      }
+    const result = await db.query('SELECT content FROM greeting_messages ORDER BY RANDOM() LIMIT 1');
+    const greetingRow = result.rows[0];
 
-      const greetingRow = rows[0] as any;
-      if (greetingRow && greetingRow.content) {
-        (req.session as any).greeting = greetingRow.content;
-        res.json({ content: greetingRow.content });
-      } else {
-        res.status(500).send('Unexpected database result');
-      }
-    });
-  } catch (error) {
-    console.error("Unexpected error fetching random greeting:", error);
-    return res.status(500).send('Internal Server Error');
+    if (greetingRow && greetingRow.content) {
+      (req.session as any).greeting = greetingRow.content;
+      res.json({ content: greetingRow.content });
+    } else {
+      res.status(500).send('No greeting message found.');
+    }
+  } catch (err) {
+    console.error('Error fetching random greeting:', err);
+    res.status(500).send('Internal Server Error');
   }
 }

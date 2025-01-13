@@ -1,11 +1,20 @@
-import sqlite3 from 'sqlite3';
+import Database from './database';
+import AppState from './AppState';
 
-export const cleanupDatabase = (db: sqlite3.Database): void => {
-  db.run("DELETE FROM messages WHERE timestamp < datetime('now', '-7 days')", (err) => {
-    if (err) {
-      console.error("Failed to delete old messages:", err.message);
-    } else {
-      console.log("Old messages deleted.");
-    }
-  });
-};
+export async function dbCleanup(): Promise<void> {
+  const db = Database.getInstance();
+  const appState = AppState.getInstance(); // Get the singleton instance
+
+  try {
+    // Delete all messages
+    const query = `DELETE FROM messages RETURNING *`;
+    const result = await db.query(query);
+    console.log(`Deleted ${result.rowCount} messages.`);
+
+    // Set the dbCleared flag
+    appState.setDbCleared(true);
+  } catch (err) {
+    console.error('Error during database cleanup:', err);
+    throw err;
+  }
+}
