@@ -15,17 +15,20 @@ const configureSession = (app: Application) => {
     app.use(
       session({
         store: new (pgSession(session))({
-          pool: pgPool, // Use PostgreSQL pool for session storage
+          pool: pgPool,
+          createTableIfMissing: true
         }),
-        secret, // Use the secret from environment variables
-        resave: false, // Safe to use false since connect-pg-simple implements `touch`
-        saveUninitialized: false, // Do not save empty sessions
+        secret,
+        resave: false,
+        saveUninitialized: false,
         cookie: {
-          maxAge: 24 * 60 * 60 * 1000, // 24 hours
-          secure: process.env.NODE_ENV === 'production', // Use HTTPS in production
-          httpOnly: true, // Prevent client-side JavaScript access
-          sameSite: 'strict', // Helps mitigate CSRF attacks
+          maxAge: 24 * 60 * 60 * 1000,
+          secure: true, // Muutettu
+          httpOnly: true,
+          sameSite: 'none', // Muutettu 'strict' -> 'none'
+          domain: '.onrender.com' // Voidaan poistaa jos ei toimi
         },
+        proxy: true // Lisätty
       })
     );
   };
