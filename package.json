@@ -13,7 +13,9 @@
     "start:prod:server": "node server.js",
     "start:prod": "concurrently \"npm run start:prod:server\" \"serve -s dist\"",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@types/express-session": "^1.17.10",
@@ -29,7 +31,19 @@
     "winston": "^3.11.0"
   },
   "devDependencies": {
+    "@chromatic-com/storybook": "^3.2.5",
     "@originjs/vite-plugin-commonjs": "^1.0.3",
+    "@storybook/addon-essentials": "^8.6.3",
+    "@storybook/addon-interactions": "^8.6.3",
+    "@storybook/addon-links": "^8.6.3",
+    "@storybook/addon-onboarding": "^8.6.3",
+    "@storybook/blocks": "^8.6.3",
+    "@storybook/builder-vite": "^8.6.3",
+    "@storybook/experimental-addon-test": "^8.6.3",
+    "@storybook/react": "^8.6.3",
+    "@storybook/react-vite": "^8.6.3",
+    "@storybook/test": "^8.6.3",
+    "@storybook/testing-library": "^0.2.1",
     "@types/node": "^20.11.0",
     "@types/react": "^18.2.36",
     "@types/react-dom": "^18.2.14",
@@ -41,7 +55,9 @@
     "eslint": "^8.53.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.4",
+    "eslint-plugin-storybook": "^0.11.4",
     "nodemon": "^3.0.1",
+    "storybook": "^8.6.3",
     "ts-node": "^10.9.1",
     "tsc-watch": "^6.0.4",
     "typescript": "^5.3.3",

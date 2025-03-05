@@ -41,3 +41,5 @@ dist-ssr
 Thumbs.db
 .cache/
 
+
+*storybook.log

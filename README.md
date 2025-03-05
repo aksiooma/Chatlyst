@@ -12,6 +12,21 @@ Chatlyst is a chatbot application originally designed to bring humor and clevern
 - Task Assistance: Helps with daily tasks and information retrieval.
 - Customizable AI Role. 
 
+## Component Documentation
+The project uses Storybook for component documentation. To view the component documentation:
+
+1. Start Storybook development server:
+```bash
+npm run storybook
+```
+
+2. Open your browser and navigate to `http://localhost:6006`
+
+The component documentation includes:
+- Interactive examples of each component
+- Props documentation
+- Different component states and variations
+- Component usage guidelines
 
 ## Key Components
 ### Frontend
