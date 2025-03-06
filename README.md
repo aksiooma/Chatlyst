@@ -6,11 +6,50 @@
 ## Overview
 Chatlyst is a chatbot application originally designed to bring humor and cleverness to everyday interactions. Inspired by the playful banter of online communities like Reddit, this chatbot stands out with its sassy and sarcastic demeanor. It's built to assist users in their daily tasks and queries while maintaining a unique, engaging personality. This version of Chatlyst is the "skeleton" version, which lays the foundation without predefined roles.
 
+## Live Demo
+A live demo of Chatlyst is available at [teijovirta.com](https://www.teijovirta.com).
+
+**Note about first load**: The backend is hosted on Render's free tier, which puts the service to sleep after inactivity. The first request might take 30-60 seconds to wake up the service. Subsequent requests will be much faster.
+
 ## Features
 - Minimalistic UI
 - Intelligent Conversations: Engages users with smart, witty responses.
 - Task Assistance: Helps with daily tasks and information retrieval.
 - Customizable AI Role. 
+
+## Technologies Used
+
+### Frontend
+- React 18
+- TypeScript
+- Styled Components for styling
+- Framer Motion for animations
+- Axios for API requests
+- Vite as build tool and development server
+
+### Backend
+- Node.js
+- Express.js
+- TypeScript
+- PostgreSQL for database
+- express-session for session management
+- connect-pg-simple for PostgreSQL session storage
+- Winston for logging
+- Dotenv for environment variable management
+
+### Deployment
+- Frontend: Vercel
+- Backend: Render
+- Database: Render PostgreSQL
+
+## Requirements
+
+### Development Requirements
+- Node.js (v16 or higher)
+- npm (v7 or higher)
+- PostgreSQL (v13 or higher)
+- OpenAI API key
+
 
 ## Component Documentation
 The project uses Storybook for component documentation. To view the component documentation:
@@ -77,7 +116,31 @@ cd Chatlyst/server
 npm install
 ```
 
-3. **Environment Setup**
+## PostgreSQL Setup
+
+The application requires PostgreSQL database for message storage and session management. All necessary tables are created automatically on first run.
+
+**Install PostgreSQL**
+   - Download and install from [postgresql.org](https://www.postgresql.org/download/)
+   - Or use package manager:
+     ```bash
+     # Ubuntu
+     sudo apt-get install postgresql
+     # macOS
+     brew install postgresql
+     ```
+
+Required environment variables for database connection:
+```env
+POSTGRES_USER=your_username
+POSTGRES_PASSWORD=your_password
+POSTGRES_DB=your_database_name
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+```
+
+
+## **Environment Setup**
 
 Set up your .env file with the required API keys and configurations.
 
@@ -140,6 +203,24 @@ GREETING = []
 ...
 ```
 
+## OpenAI Model Configuration
+
+The chatbot uses OpenAI's GPT-4-mini model with the following configuration:
+- Temperature: 0.8 (balances creativity and coherence)
+- Top_p: 1 (nucleus sampling, acts as fallback for temperature)
+- Frequency penalty: 2.0 (reduces repetition in longer conversations)
+- Presence penalty: 0.5 (encourages some topic variation)
+- Max tokens: 500 (limits response length)
+
+These settings are optimized for engaging, natural and playful conversation while maintaining coherence. The model and its parameters can be found in `server/src/controllers/messageController.ts`.
+
+- Higher temperature (>0.8) = more creative, random responses
+- Lower temperature (<0.5) = more focused, deterministic responses
+- Higher frequency_penalty = less repetition
+- Higher presence_penalty = more topic changes
+
+**Note**: OpenAI models are regularly updated and may require version changes. The current implementation uses 'gpt-4o-mini' for optimal performance and cost balance.
+
 ## Port Configuration for Development and Production
 
 In this project, the server is configured to listen on different ports for development and production environments:
@@ -147,8 +228,57 @@ In this project, the server is configured to listen on different ports for devel
     - Development: The server uses a custom port defined in process.env.VITE_PORT or defaults to 3000.
     - Production: In environments like Heroku, the server uses the dynamically assigned port from process.env.PORT.
 
+## API Documentation
+
+The Chatlyst backend provides the following API endpoints:
+
+### Message Endpoint
+- **URL**: `/message`
+- **Method**: `POST`
+- **Authentication**: Session-based
+- **Request Body**:
+  ```json
+  {
+    "messages": [
+      { "role": "user", "content": "Hello, how are you?" }
+    ],
+    "honeypot": "" // Anti-spam field, should be left empty
+  }
+  ```
+- **Response**:
+  ```json
+  {
+    "message": "I'm doing well, thank you for asking!"
+  }
+  ```
+- **Rate Limiting**: 15 requests per 5 minutes
+
+### History Endpoint
+- **URL**: `/history`
+- **Method**: `GET`
+- **Authentication**: Session-based
+- **Response**:
+  ```json
+  [
+    { "role": "user", "content": "Hello, how are you?" },
+    { "role": "assistant", "content": "I'm doing well, thank you for asking!" }
+  ]
+  ```
+
+### Greeting Endpoint
+- **URL**: `/greeting`
+- **Method**: `GET`
+- **Authentication**: None
+- **Response**:
+  ```json
+  {
+    "greeting": "Greetings, mere mortal. How may I grace you with my unparalleled wisdom today?"
+  }
+  ```
+
 ## Usage
 Interact with Chatlyst through its web interface or integrate it into your existing platforms. Simply start by typing in your query or command and let Chatlyst take care of the rest with its flair.
+
 
 ## Contributing
 Contributions to Chatlyst are welcome. If you have suggestions or improvements, feel free to fork the repository and submit a pull request.
@@ -161,3 +291,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
     OpenAI for GPT models
     Teijo Virta - Original Creator
     All contributors and supporters
+

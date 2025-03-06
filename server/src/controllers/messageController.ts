@@ -28,12 +28,20 @@ export async function sendToChatGPT(messages: Messages): Promise<string> {
     const response = await axios.post(
       API_URL,
       {
+         // Update model version when OpenAI deprecates current one
         model: 'gpt-4o-mini',
         messages: messages,
+        // Higher value (0.8) allows more creative responses
         temperature: 0.8,
+        // Nucleus sampling - controls diversity like temperature
+        // Not recommended to use both temperature and top_p
+        // Keeping this as fallback if temperature is disabled
         top_p: 1,
+        // Penalize repetition  
         frequency_penalty: 2,
+        // Penalize missing words
         presence_penalty: 0.5,
+        // Maximum tokens to generate 
         max_tokens: 500,
       },
       {
